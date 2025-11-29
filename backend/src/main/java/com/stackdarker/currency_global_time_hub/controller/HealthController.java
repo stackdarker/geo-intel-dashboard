@@ -20,7 +20,7 @@ public class HealthController {
         return Map.of(  // ..... builds JSON object
                 "status", "UP",
                 "timestamp", OffsetDateTime.now().toString(),
-                "service", "global-time-currency-hub-backend"
+                "service", "currency_global_time_hub_backend"
         );
     }
 }
