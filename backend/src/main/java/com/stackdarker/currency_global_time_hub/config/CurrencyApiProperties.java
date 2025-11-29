@@ -1,11 +1,12 @@
 package com.stackdarker.currency_global_time_hub.config;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-
-@ConfigurationProperties(prefix = "currency-api")
+@ConfigurationProperties(prefix = "currency.api")
 public class CurrencyApiProperties {
-    // base URL of the currency API
 
+    // base URL for the currency API
+    
     private String baseUrl;
 
     public String getBaseUrl() {

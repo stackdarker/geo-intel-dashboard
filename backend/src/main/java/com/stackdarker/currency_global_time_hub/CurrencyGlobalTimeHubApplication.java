@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @SpringBootApplication
 @EnableConfigurationProperties(CurrencyApiProperties.class)
 public class CurrencyGlobalTimeHubApplication {
+
     public static void main(String[] args) {
         SpringApplication.run(CurrencyGlobalTimeHubApplication.class, args);
     }
