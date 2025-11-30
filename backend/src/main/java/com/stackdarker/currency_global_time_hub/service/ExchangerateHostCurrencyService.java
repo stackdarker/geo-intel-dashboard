@@ -23,6 +23,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+// service implementation for Exchangerate Host API
+
 @Service
 public class ExchangerateHostCurrencyService implements CurrencyService {
 
@@ -35,6 +37,7 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
         this.properties = properties;
     }
 
+    // Helper method to resolve and validate the base URL
     private String resolveBaseUrl() {
         String baseUrl = properties.getBaseUrl();
 
@@ -61,7 +64,7 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
     @Cacheable("currencySymbols")
     public Map<String, CurrencySymbol> getSymbols() {
         String baseUrl = resolveBaseUrl();
-        String url = baseUrl + "/currencies"; // Frankfurter: GET /v1/currencies
+        String url = baseUrl + "/currencies"; // Frankfurter endpoint for currencies
 
         try {
             ResponseEntity<Map<String, String>> response =
@@ -103,7 +106,7 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
         String fromCode = from.toUpperCase(Locale.ROOT);
         String toCode = to.toUpperCase(Locale.ROOT);
 
-        // Frankfurter does not have /convert – we fetch the rate and compute ourselves:
+        // Frankfurter does not have /convert ,, so we have to fetch the rate and compute ourselves:
         String url = String.format(
                 "%s/latest?base=%s&symbols=%s",
                 baseUrl,
