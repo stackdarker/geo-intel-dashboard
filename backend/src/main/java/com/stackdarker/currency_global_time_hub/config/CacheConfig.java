@@ -5,26 +5,32 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.cache.annotation.EnableCaching;
 
 import java.util.concurrent.TimeUnit;
 
 @Configuration
+@EnableCaching
 public class CacheConfig {
 
     @Bean
-    public Caffeine<Object, Object> caffeineConfig() {
-        return Caffeine.newBuilder()
-                .expireAfterWrite(30, TimeUnit.MINUTES)
-                .maximumSize(1_000);
-    }
-
-    @Bean
-    public CacheManager cacheManager(Caffeine<Object, Object> caffeine) {
+    public CacheManager cacheManager() {
+        // register every cache used in @Cacheable
         CaffeineCacheManager cacheManager = new CaffeineCacheManager(
                 "currencySymbols",
-                "latestRates"
+                "latestRates",
+                "countrySearch",
+                "countryProfile",
+                "countryIndicators",
+                "currentWeather"
         );
-        cacheManager.setCaffeine(caffeine);
+
+        cacheManager.setCaffeine(
+                Caffeine.newBuilder()
+                        .expireAfterWrite(10, TimeUnit.MINUTES)
+                        .maximumSize(1000)
+        );
+
         return cacheManager;
     }
 }
