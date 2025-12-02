@@ -2,9 +2,12 @@ package com.stackdarker.currency_global_time_hub.insights.api;
 
 import com.stackdarker.currency_global_time_hub.insights.model.CountryInsights;
 import com.stackdarker.currency_global_time_hub.insights.service.InsightsService;
+
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 // REST controller for country insights endpoints
+@Validated
 @RestController
 @RequestMapping("/api/v1/insights")
 public class InsightsController {

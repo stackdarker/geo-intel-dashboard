@@ -3,13 +3,18 @@ package com.stackdarker.currency_global_time_hub.time.api;
 import com.stackdarker.currency_global_time_hub.time.model.TimeConversionResult;
 import com.stackdarker.currency_global_time_hub.time.model.TimeNowResponse;
 import com.stackdarker.currency_global_time_hub.time.service.TimeService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
 // REST controller for time-related endpoints
+@Validated
 @RestController
 @RequestMapping("/api/v1/time")
 public class TimeController {

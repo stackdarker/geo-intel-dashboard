@@ -1,82 +1,100 @@
 package com.stackdarker.currency_global_time_hub.common.api;
 
-// api error response handler model
-
-import com.fasterxml.jackson.annotation.JsonInclude;
+// adjusted API error response to be more detailed and use builder pattern
 
 import java.time.Instant;
-import java.util.List;
 
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiErrorResponse {
-    
+
+    private Instant timestamp;
     private int status;
     private String error;
-    private Instant timestamp;
-    private List<String> details;
-    private String path;
     private String message;
+    private String path;
+    private String errorCode;
+    private String service;
 
-    // constructors, getters, and setters
     public ApiErrorResponse() {
     }
 
-    public ApiErrorResponse(Instant timestamp, int status, String error, String message, String path, List<String> details) {
-        this.timestamp = timestamp;
-        this.message = message;
-        this.status = status;
-        this.details = details;
-        this.error = error;
-        this.path = path;
+    private ApiErrorResponse(Builder builder) {
+        this.timestamp = builder.timestamp;
+        this.status = builder.status;
+        this.error = builder.error;
+        this.message = builder.message;
+        this.path = builder.path;
+        this.errorCode = builder.errorCode;
+        this.service = builder.service;
+    }
+
+    public static Builder builder(int status, String error) {
+        return new Builder(status, error);
+    }
+
+    public static class Builder {
+        private final Instant timestamp = Instant.now();
+        private final int status;
+        private final String error;
+        private String message;
+        private String path;
+        private String errorCode;
+        private String service;
+
+        public Builder(int status, String error) {
+            this.status = status;
+            this.error = error;
+        }
+
+        public Builder message(String message) {
+            this.message = message;
+            return this;
+        }
+
+        public Builder path(String path) {
+            this.path = path;
+            return this;
+        }
+
+        public Builder errorCode(String errorCode) {
+            this.errorCode = errorCode;
+            return this;
+        }
+
+        public Builder service(String service) {
+            this.service = service;
+            return this;
+        }
+
+        public ApiErrorResponse build() {
+            return new ApiErrorResponse(this);
+        }
     }
 
     public Instant getTimestamp() {
         return timestamp;
-    }
-    
-    public void setTimestamp(Instant timestamp) {
-        this.timestamp = timestamp;
     }
 
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public String getError() {
         return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getPath() {
+        return path;
     }
 
-
-    public List<String> getDetails() {
-        return details;
+    public String getErrorCode() {
+        return errorCode;
     }
 
-    public void setDetails(List<String> details) {
-        this.details = details;
+    public String getService() {
+        return service;
     }
 }

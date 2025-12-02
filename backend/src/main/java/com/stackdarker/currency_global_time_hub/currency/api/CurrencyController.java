@@ -7,6 +7,8 @@ import com.stackdarker.currency_global_time_hub.currency.service.CurrencyService
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +34,9 @@ public class CurrencyController {
 
     @GetMapping("/convert")
     public ConversionResult convert(
-            @RequestParam @NotBlank String from,
-            @RequestParam @NotBlank String to,
-            @RequestParam @DecimalMin("0.0") BigDecimal amount
+        @RequestParam @NotBlank @Pattern(regexp = "^[A-Z]{3}$") String from,
+        @RequestParam @NotBlank @Pattern(regexp = "^[A-Z]{3}$") String to,
+        @RequestParam @DecimalMin(value = "0.01") BigDecimal amount
     ) {
         return currencyService.convert(from, to, amount);
     }
