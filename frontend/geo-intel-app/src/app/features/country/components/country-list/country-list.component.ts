@@ -2,11 +2,16 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CountryService } from '../../services/country.service';
 import { Country } from '../../models/country.model';
 import { NgForOf, NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';   
 
 @Component({
   selector: 'app-country-list',
   standalone: true,
-  imports: [NgForOf, NgIf],
+  imports: [
+    NgForOf,
+    NgIf,
+    RouterLink                         
+  ],
   templateUrl: './country-list.component.html',
   styleUrls: ['./country-list.component.scss'],
 })

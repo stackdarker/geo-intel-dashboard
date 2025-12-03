@@ -48,7 +48,7 @@ public class RestCountriesClient implements CountryClient {
     // mapping
     private CountryProfile toCountryProfile(RestCountry rc) {
         String code =
-                (rc.getCca3() != null && !rc.getCca3().isBlank()) ? rc.getCca3() : rc.getCca2();
+            (rc.getCca2() != null && !rc.getCca2().isBlank()) ? rc.getCca2() : rc.getCca3();
 
         String name =
                 (rc.getName() != null && rc.getName().getCommon() != null)

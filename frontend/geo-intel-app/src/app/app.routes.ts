@@ -9,6 +9,12 @@ export const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
     { path: 'dashboard', component: DashboardHomeComponent },
     { path: 'countries', component: CountryListComponent },
+    {
+      path: 'countries/:code',
+      loadComponent: () =>
+        import('./features/country/components/country-detail/country-detail.component')
+          .then(m => m.CountryDetailComponent),
+    },    
     { path: '**', redirectTo: 'dashboard' },
     // placeholders for future features
     // { path: 'currencies', component: CurrencyListComponent },

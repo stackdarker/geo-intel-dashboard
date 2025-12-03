@@ -1,0 +1,93 @@
+<div class="country-detail">
+    <a routerLink="/countries" class="back-link">&larr; Back to countries</a>
+  
+    <ng-container *ngIf="isLoading(); else loaded">
+      <p>Loading country details...</p>
+    </ng-container>
+  
+    <ng-template #loaded>
+      <ng-container *ngIf="!error(); else errorTpl">
+        <ng-container *ngIf="profile() as p">
+          <h1>{{ title() }}</h1>
+  
+          <section class="profile">
+            <h2>Profile</h2>
+            <div class="profile-grid">
+              <div><strong>Region:</strong> {{ p.region }}</div>
+              <div><strong>Capital:</strong> {{ p.capital }}</div>
+              <div><strong>Population:</strong> {{ p.population | number }}</div>
+              <div><strong>Currencies:</strong> {{ p.currencies?.join(', ') || 'N/A' }}</div>
+              <div><strong>Languages:</strong> {{ p.languages.join(', ') || 'N/A' }}</div>
+              <div>
+                <strong>Coordinates:</strong>
+                {{ p.latitude }}, {{ p.longitude }}
+              </div>
+            </div>
+          </section>
+  
+          <section class="indicators" *ngIf="indicators() as ind">
+            <h2>Key Indicators</h2>
+            <div class="indicator-cards">
+  
+              <!-- GDP -->
+              <article class="indicator-card">
+                <h3>{{ ind.gdp.name }}</h3>
+  
+                <ng-container *ngIf="ind.gdp.year !== 0; else noGdp">
+                  <p class="value">
+                    {{ ind.gdp.value | number:'1.0-0' }}
+                  </p>
+                  <p class="meta">Year: {{ ind.gdp.year }}</p>
+                </ng-container>
+  
+                <ng-template #noGdp>
+                  <p class="value">No data</p>
+                  <p class="meta">Year: —</p>
+                </ng-template>
+              </article>
+  
+              <!-- Population -->
+              <article class="indicator-card">
+                <h3>{{ ind.population.name }}</h3>
+  
+                <ng-container *ngIf="ind.population.year !== 0; else noPop">
+                  <p class="value">
+                    {{ ind.population.value | number:'1.0-0' }}
+                  </p>
+                  <p class="meta">Year: {{ ind.population.year }}</p>
+                </ng-container>
+  
+                <ng-template #noPop>
+                  <p class="value">No data</p>
+                  <p class="meta">Year: —</p>
+                </ng-template>
+              </article>
+  
+              <!-- Life expectancy -->
+              <article class="indicator-card">
+                <h3>{{ ind.lifeExpectancy.name }}</h3>
+  
+                <ng-container *ngIf="ind.lifeExpectancy.year !== 0; else noLifeExp">
+                  <p class="value">
+                    {{ ind.lifeExpectancy.value | number:'1.1-1' }}
+                  </p>
+                  <p class="meta">Year: {{ ind.lifeExpectancy.year }}</p>
+                </ng-container>
+  
+                <ng-template #noLifeExp>
+                  <p class="value">No data</p>
+                  <p class="meta">Year: —</p>
+                </ng-template>
+              </article>
+  
+            </div>
+          </section>
+        </ng-container>
+      </ng-container>
+  
+      <ng-template #errorTpl>
+        <p class="error">{{ error() }}</p>
+      </ng-template>
+    </ng-template>
+  </div>
+  
