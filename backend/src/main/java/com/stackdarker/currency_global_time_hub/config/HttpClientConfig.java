@@ -14,8 +14,9 @@ public class HttpClientConfig {
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         // no new dependency needed, as RestTemplate is part of Spring Web  
         return builder
-                .setConnectTimeout(Duration.ofSeconds(3))
-                .setReadTimeout(Duration.ofSeconds(5))
-                .build();
+        .setConnectTimeout(Duration.ofSeconds(5))
+        .setReadTimeout(Duration.ofSeconds(15))
+        .build();
+
     }
 }

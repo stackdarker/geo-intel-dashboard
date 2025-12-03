@@ -13,18 +13,21 @@ import java.util.Map;
 
 @Component
 @Profile({"default", "dev"})
-public class StubCountryClient implements CountryClient {
+public class RestCountriesClient implements CountryClient {
 
     private static final String REST_COUNTRIES_URL =
             "https://restcountries.com/v3.1/all?fields=cca2,cca3,name,region,capital,population,currencies,languages,latlng";
 
     private final RestTemplate restTemplate;
+    private final WorldBankCountryClient worldBankCountryClient;
 
-    public StubCountryClient(RestTemplate restTemplate) {
+    public RestCountriesClient(RestTemplate restTemplate,
+                               WorldBankCountryClient worldBankCountryClient) {
         this.restTemplate = restTemplate;
+        this.worldBankCountryClient = worldBankCountryClient;
     }
 
-    // get all countries
+    // get all countries - from Rest Countries API
     @Override
     public List<CountryProfile> getAllCountries() {
         RestCountry[] response = restTemplate.getForObject(REST_COUNTRIES_URL, RestCountry[].class);
@@ -94,7 +97,7 @@ public class StubCountryClient implements CountryClient {
         );
     }
 
-    // search
+    // search (filters in memory currently)
     @Override
     public List<CountryProfile> searchCountries(String query) {
         String q = query.toLowerCase();
@@ -106,7 +109,7 @@ public class StubCountryClient implements CountryClient {
                 .toList();
     }
 
-    // get profile
+    // profile
     @Override
     public CountryProfile getCountryProfile(String countryCode) {
         String codeUpper = countryCode.toUpperCase();
@@ -126,15 +129,15 @@ public class StubCountryClient implements CountryClient {
                 ));
     }
 
-    // hook to world bank
+    //indicators
     @Override
     public CountryIndicators getCountryIndicators(String countryCode) {
-        // wire this to real World Bank client next
-        return new CountryIndicators(
-                countryCode.toUpperCase(),
-                new IndicatorValue("NY.GDP.MKTP.CD", "GDP", 0.0, 2023),
-                new IndicatorValue("SP.POP.TOTL", "Population", 0.0, 2023),
-                new IndicatorValue("SP.DYN.LE00.IN", "Life Expectancy", 0.0, 2021)
-        );
+        String code = countryCode.toUpperCase();
+
+        IndicatorValue gdp = worldBankCountryClient.getGdpCurrentUsd(code);
+        IndicatorValue population = worldBankCountryClient.getPopulationTotal(code);
+        IndicatorValue lifeExpectancy = worldBankCountryClient.getLifeExpectancy(code);
+
+        return new CountryIndicators(code, gdp, population, lifeExpectancy);
     }
 }
