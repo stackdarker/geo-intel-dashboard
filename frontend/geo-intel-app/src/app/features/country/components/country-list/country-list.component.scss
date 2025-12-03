@@ -1,0 +1,36 @@
+// PLACEHOLDER!
+
+.country-list {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  }
+  
+  .country-list h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .country-list ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .country-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.95rem;
+  }
+  
+  .country-list li:last-child {
+    border-bottom: none;
+  }
+  
+  .error {
+    color: #b91c1c;
+    margin-top: 0.5rem;
+  }
+  

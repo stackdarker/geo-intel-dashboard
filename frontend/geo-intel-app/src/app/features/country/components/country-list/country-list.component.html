@@ -1,0 +1,19 @@
+<section class="country-list">
+    <h2>Countries</h2>
+  
+    <div *ngIf="isLoading()">Loading countries...</div>
+  
+    <div *ngIf="error() && !isLoading()" class="error">
+      {{ error() }}
+    </div>
+  
+    <ul *ngIf="!isLoading() && !error()">
+      <li *ngFor="let c of countries()">
+        <strong>{{ c.name }}</strong>
+        <span *ngIf="c.code">({{ c.code }})</span>
+        <span *ngIf="c.region"> – {{ c.region }}</span>
+        <span *ngIf="c.capital"> – Capital: {{ c.capital }}</span>
+      </li>
+    </ul>
+  </section>
+  

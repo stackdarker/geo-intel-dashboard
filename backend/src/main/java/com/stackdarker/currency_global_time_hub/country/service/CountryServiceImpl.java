@@ -34,4 +34,13 @@ public class CountryServiceImpl implements CountryService {
     public CountryIndicators getIndicators(String countryCode) {
         return countryClient.getCountryIndicators(countryCode);
     }
+
+    @Override
+    @Cacheable("countryAll")
+    public List<CountryProfile> getAllCountries() {
+        return countryClient.getAllCountries();  //  real call
+    }
 }
+
+
+

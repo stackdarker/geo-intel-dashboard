@@ -14,12 +14,19 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/api/v1/countries")
+@CrossOrigin(origins = "http://localhost:4200")  // allow Angular dev
 public class CountryController {
 
     private final CountryService countryService;
 
     public CountryController(CountryService countryService) {
         this.countryService = countryService;
+    }
+
+    // get all countries
+    @GetMapping("/all")
+    public List<CountryProfile> getAllCountries() {
+        return countryService.getAllCountries();
     }
 
     // search countries by name or partial name

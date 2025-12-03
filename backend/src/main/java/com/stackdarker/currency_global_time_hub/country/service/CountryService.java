@@ -12,4 +12,6 @@ public interface CountryService {
     CountryProfile getProfile(String countryCode);
 
     CountryIndicators getIndicators(String countryCode);
+
+    List<CountryProfile> getAllCountries();
 }

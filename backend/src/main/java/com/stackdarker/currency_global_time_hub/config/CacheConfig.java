@@ -22,7 +22,8 @@ public class CacheConfig {
                 "countrySearch",
                 "countryProfile",
                 "countryIndicators",
-                "currentWeather"
+                "currentWeather",
+                "countryAll"
         );
 
         cacheManager.setCaffeine(
