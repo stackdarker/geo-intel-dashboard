@@ -1,15 +1,94 @@
 <section class="country-list">
-  <h2>Countries</h2>
 
+  <!-- Header -->
+  <div class="countries-header">
+    <h2>Countries</h2>
+    <div class="meta" *ngIf="!isLoading() && !error()">
+      <span>
+        Showing {{ filteredCountries().length }} of {{ totalCount() }} countries
+      </span>
+      <button type="button" class="link-btn" (click)="clearFilters()">
+        Clear filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <form
+    *ngIf="filterForm"
+    [formGroup]="filterForm"
+    class="filters"
+    novalidate
+  >
+    <!-- Search -->
+    <div class="filter-field">
+      <label for="search">Search</label>
+      <input
+        id="search"
+        type="search"
+        formControlName="search"
+        placeholder="Search by name, code, or capital"
+      />
+    </div>
+
+    <!-- Region -->
+    <div class="filter-field">
+      <label for="region">Region</label>
+      <select id="region" formControlName="region">
+        <option [ngValue]="null">All regions</option>
+        <option *ngFor="let r of regions" [value]="r">{{ r }}</option>
+      </select>
+    </div>
+
+    <!-- Min population -->
+    <div class="filter-field">
+      <label for="minPopulation">Min population</label>
+      <input
+        id="minPopulation"
+        type="number"
+        min="0"
+        step="1000000"
+        formControlName="minPopulation"
+        placeholder="e.g. 10000000"
+      />
+    </div>
+
+    <!-- Sort -->
+    <div class="filter-field">
+      <label for="sortBy">Sort by</label>
+      <select id="sortBy" formControlName="sortBy">
+        <option value="name">Name (A → Z)</option>
+        <option value="population">Population (high → low)</option>
+      </select>
+    </div>
+  </form>
+
+  <!-- Active filter chips -->
+  <div class="active-filters" *ngIf="filterForm">
+    <ng-container *ngIf="filterForm.value.search">
+      <span class="chip">Search: "{{ filterForm.value.search }}"</span>
+    </ng-container>
+    <ng-container *ngIf="filterForm.value.region">
+      <span class="chip">Region: {{ filterForm.value.region }}</span>
+    </ng-container>
+    <ng-container *ngIf="filterForm.value.minPopulation">
+      <span class="chip">
+        Population ≥ {{ filterForm.value.minPopulation | number }}
+      </span>
+    </ng-container>
+  </div>
+
+  <!-- Loading / error states -->
   <div *ngIf="isLoading()">Loading countries...</div>
 
   <div *ngIf="error() && !isLoading()" class="error">
     {{ error() }}
   </div>
 
+  <!-- Country list -->
   <ul *ngIf="!isLoading() && !error()">
     <li
-      *ngFor="let c of countries()"
+      *ngFor="let c of filteredCountries()"
       [routerLink]="['/countries', c.code]"
       class="country-item"
     >
@@ -17,6 +96,9 @@
       <span *ngIf="c.code">({{ c.code }})</span>
       <span *ngIf="c.region"> – {{ c.region }}</span>
       <span *ngIf="c.capital"> – Capital: {{ c.capital }}</span>
+      <span *ngIf="c.population">
+        – Population: {{ c.population | number }}
+      </span>
     </li>
   </ul>
 </section>
