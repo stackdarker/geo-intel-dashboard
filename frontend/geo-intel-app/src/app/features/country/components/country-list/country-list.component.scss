@@ -175,3 +175,43 @@
     cursor: pointer;
   }
 }
+
+.country-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.country-select {
+  flex: 0 0 auto;
+}
+
+.country-content {
+  flex: 1;
+  cursor: pointer;
+}
+
+.compare-bar {
+  position: sticky;
+  bottom: 0;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background-color: #111827;
+  color: #f9fafb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  .compare-button {
+    padding: 0.4rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    background-color: #3b82f6;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+}
+

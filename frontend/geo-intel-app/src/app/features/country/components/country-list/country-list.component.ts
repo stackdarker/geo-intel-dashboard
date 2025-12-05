@@ -29,7 +29,7 @@ import { Subscription } from 'rxjs';
     NgIf,
     RouterLink,
     ReactiveFormsModule,
-    DecimalPipe,   
+    DecimalPipe,
   ],
   templateUrl: './country-list.component.html',
   styleUrls: ['./country-list.component.scss'],
@@ -40,11 +40,15 @@ export class CountryListComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
+  // raw data
   countries = signal<Country[]>([]);
   isLoading = signal(false);
   error = signal<string | null>(null);
 
-  // filter form and state
+  // selection for compare
+  selectedCodes = signal<string[]>([]);
+
+  // filter form + state
   filterForm!: FormGroup;
   filters = signal<CountryFilters>({
     search: '',
@@ -53,13 +57,12 @@ export class CountryListComponent implements OnInit, OnDestroy {
     sortBy: 'name',
   });
 
+  // derived state
   filteredCountries = computed<Country[]>(() =>
     this.applyFilters(this.countries(), this.filters())
   );
-
   totalCount = computed(() => this.countries().length);
 
-  // subscriptions
   private filterSub?: Subscription;
 
   readonly regions: string[] = [
@@ -80,7 +83,7 @@ export class CountryListComponent implements OnInit, OnDestroy {
     this.filterSub?.unsubscribe();
   }
 
-  // data loading
+  // data
   private loadCountries(): void {
     this.isLoading.set(true);
     this.error.set(null);
@@ -98,7 +101,7 @@ export class CountryListComponent implements OnInit, OnDestroy {
     });
   }
 
-  // filters
+  // filters/query params
   private initFiltersFromQueryParams(): void {
     const qp = this.route.snapshot.queryParamMap;
 
@@ -171,7 +174,7 @@ export class CountryListComponent implements OnInit, OnDestroy {
     this.updateQueryParams(reset);
   }
 
-  // filtering logic
+  // filtering
   private applyFilters(
     countries: Country[],
     filters: CountryFilters
@@ -181,9 +184,9 @@ export class CountryListComponent implements OnInit, OnDestroy {
     const search = (filters.search || '').toLowerCase().trim();
     if (search) {
       result = result.filter((c) => {
-        const name = (c as any).name ?? '';
-        const code = (c as any).code ?? (c as any).alpha3Code ?? '';
-        const capital = (c as any).capital ?? '';
+        const name = c.name ?? '';
+        const code = c.code ?? '';
+        const capital = c.capital ?? '';
 
         return (
           name.toLowerCase().includes(search) ||
@@ -194,25 +197,61 @@ export class CountryListComponent implements OnInit, OnDestroy {
     }
 
     if (filters.region) {
-      result = result.filter((c) => (c as any).region === filters.region);
+      result = result.filter((c) => c.region === filters.region);
     }
 
     if (filters.minPopulation != null && filters.minPopulation > 0) {
       result = result.filter(
-        (c) => ((c as any).population ?? 0) >= filters.minPopulation!
+        (c) => (c.population ?? 0) >= filters.minPopulation!
       );
     }
 
     if (filters.sortBy === 'population') {
       result = result.sort(
-        (a, b) => ((b as any).population ?? 0) - ((a as any).population ?? 0)
+        (a, b) => (b.population ?? 0) - (a.population ?? 0)
       );
     } else {
+      // default: sort by name asc
       result = result.sort((a, b) =>
-        ((a as any).name || '').localeCompare((b as any).name || '')
+        (a.name || '').localeCompare(b.name || '')
       );
     }
 
     return result;
+  }
+
+  // selection for compare
+  onSelectionChange(code: string, event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    const checked = !!input?.checked;
+    this.toggleSelection(code, checked);
+  }
+
+  toggleSelection(code: string, checked: boolean): void {
+    const current = this.selectedCodes();
+    const exists = current.includes(code);
+
+    let next = current;
+
+    if (checked && !exists) {
+      next = [...current, code];
+    } else if (!checked && exists) {
+      next = current.filter((c) => c !== code);
+    }
+
+    this.selectedCodes.set(next);
+  }
+
+  isSelected(code: string): boolean {
+    return this.selectedCodes().includes(code);
+  }
+
+  goToCompare(): void {
+    const codes = this.selectedCodes();
+    if (codes.length < 2) return;
+
+    this.router.navigate(['/countries/compare'], {
+      queryParams: { codes: codes.join(',') },
+    });
   }
 }

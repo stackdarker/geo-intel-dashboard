@@ -1,6 +1,5 @@
 export interface Country {
-latitude: any;
-longitude: any;
+subregion: any;
 languages: any;
     code: string;       
     name: string;
@@ -9,5 +8,9 @@ languages: any;
     population?: number;
     currencies?: string[];
     timezones?: string[];
+    area?: number;
+    incomeLevel?: string;
+    latitude?: number;
+    longitude?: number;
   }
   

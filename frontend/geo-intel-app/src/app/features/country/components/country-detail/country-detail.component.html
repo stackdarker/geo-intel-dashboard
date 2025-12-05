@@ -1,93 +1,180 @@
 <div class="country-detail">
-    <a routerLink="/countries" class="back-link">&larr; Back to countries</a>
-  
-    <ng-container *ngIf="isLoading(); else loaded">
-      <p>Loading country details...</p>
-    </ng-container>
-  
-    <ng-template #loaded>
-      <ng-container *ngIf="!error(); else errorTpl">
-        <ng-container *ngIf="profile() as p">
-          <h1>{{ title() }}</h1>
-  
-          <section class="profile">
+  <a routerLink="/countries" class="back-link">&larr; Back to countries</a>
+
+  <!-- Loading -->
+  <ng-container *ngIf="isLoading(); else loaded">
+    <p>Loading country details...</p>
+  </ng-container>
+
+  <ng-template #loaded>
+    <ng-container *ngIf="!error(); else errorTpl">
+      <ng-container *ngIf="profile() as p">
+
+        <!-- Header -->
+        <header class="detail-header">
+          <div class="title-block">
+            <h1>{{ title() }}</h1>
+            <p class="subtitle">
+              {{ p.region || 'Unknown region' }}
+              <span *ngIf="p.capital">
+                • Capital: {{ p.capital }}
+              </span>
+            </p>
+          </div>
+        </header>
+
+        <!-- Main two-column layout -->
+        <div class="detail-grid">
+
+          <!-- Profile panel -->
+          <section class="panel profile-panel">
             <h2>Profile</h2>
             <div class="profile-grid">
-              <div><strong>Region:</strong> {{ p.region }}</div>
-              <div><strong>Capital:</strong> {{ p.capital }}</div>
-              <div><strong>Population:</strong> {{ p.population | number }}</div>
-              <div><strong>Currencies:</strong> {{ p.currencies?.join(', ') || 'N/A' }}</div>
-              <div><strong>Languages:</strong> {{ p.languages.join(', ') || 'N/A' }}</div>
+              <div>
+                <strong>Region:</strong>
+                {{ p.region || 'N/A' }}
+              </div>
+
+              <div>
+                <strong>Capital:</strong>
+                {{ p.capital || 'N/A' }}
+              </div>
+
+              <div>
+                <strong>Population:</strong>
+                {{ p.population != null ? (p.population | number:'1.0-0') : 'N/A' }}
+              </div>
+
+              <div>
+                <strong>Area (km²):</strong>
+                <ng-container *ngIf="p.area != null; else noArea">
+                  {{ p.area | number:'1.0-0' }}
+                </ng-container>
+                <ng-template #noArea>
+                  N/A
+                </ng-template>
+              </div>
+
+              <div>
+                <strong>Income Level:</strong>
+                {{ p.incomeLevel || 'N/A' }}
+              </div>
+
+              <div>
+                <strong>Currencies:</strong>
+                {{ p.currencies?.join(', ') || 'N/A' }}
+              </div>
+
+              <div>
+                <strong>Languages:</strong>
+                {{ p.languages?.join(', ') || 'N/A' }}
+              </div>
+
               <div>
                 <strong>Coordinates:</strong>
-                {{ p.latitude }}, {{ p.longitude }}
+                <ng-container *ngIf="p.latitude != null && p.longitude != null; else noCoordsInline">
+                  {{ p.latitude }}, {{ p.longitude }}
+                </ng-container>
+                <ng-template #noCoordsInline>
+                  N/A
+                </ng-template>
               </div>
             </div>
           </section>
-  
-          <section class="indicators" *ngIf="indicators() as ind">
-            <h2>Key Indicators</h2>
-            <div class="indicator-cards">
-  
-              <!-- GDP -->
-              <article class="indicator-card">
-                <h3>{{ ind.gdp.name }}</h3>
-  
-                <ng-container *ngIf="ind.gdp.year !== 0; else noGdp">
-                  <p class="value">
-                    {{ ind.gdp.value | number:'1.0-0' }}
-                  </p>
-                  <p class="meta">Year: {{ ind.gdp.year }}</p>
-                </ng-container>
-  
-                <ng-template #noGdp>
-                  <p class="value">No data</p>
-                  <p class="meta">Year: —</p>
-                </ng-template>
-              </article>
-  
-              <!-- Population -->
-              <article class="indicator-card">
-                <h3>{{ ind.population.name }}</h3>
-  
-                <ng-container *ngIf="ind.population.year !== 0; else noPop">
-                  <p class="value">
-                    {{ ind.population.value | number:'1.0-0' }}
-                  </p>
-                  <p class="meta">Year: {{ ind.population.year }}</p>
-                </ng-container>
-  
-                <ng-template #noPop>
-                  <p class="value">No data</p>
-                  <p class="meta">Year: —</p>
-                </ng-template>
-              </article>
-  
-              <!-- Life expectancy -->
-              <article class="indicator-card">
-                <h3>{{ ind.lifeExpectancy.name }}</h3>
-  
-                <ng-container *ngIf="ind.lifeExpectancy.year !== 0; else noLifeExp">
-                  <p class="value">
-                    {{ ind.lifeExpectancy.value | number:'1.1-1' }}
-                  </p>
-                  <p class="meta">Year: {{ ind.lifeExpectancy.year }}</p>
-                </ng-container>
-  
-                <ng-template #noLifeExp>
-                  <p class="value">No data</p>
-                  <p class="meta">Year: —</p>
-                </ng-template>
-              </article>
-  
-            </div>
+
+          <!-- Map / location panel  -->
+          <section class="panel map-panel">
+            <h2>Location</h2>
+
+            <ng-container *ngIf="p.latitude != null && p.longitude != null; else noCoords">
+              <p class="coords">
+                Latitude: {{ p.latitude }} • Longitude: {{ p.longitude }}
+              </p>
+
+              <!-- Static placeholder image + link to OpenStreetMap -->
+              <a
+                class="map-placeholder-link"
+                [href]="'https://www.openstreetmap.org/?mlat=' + p.latitude + '&mlon=' + p.longitude"
+                target="_blank"
+                rel="noopener noreferrer"
+                [title]="'Open map for ' + p.name"
+              >
+                <span class="map-link-text">View map →</span>
+                <img
+                  src="assets/map-placeholder.png"
+                  alt="Map placeholder for {{ p.name }}"
+                  class="map-placeholder-img"
+                />
+              </a>
+            </ng-container>
+
+            <ng-template #noCoords>
+              <p class="muted">No coordinate data available for this country.</p>
+            </ng-template>
           </section>
-        </ng-container>
+
+        </div>
+
+        <!-- Indicators section -->
+        <section class="panel indicators-panel" *ngIf="indicators() as ind">
+          <h2>Key Indicators</h2>
+
+          <div class="indicator-cards">
+
+            <!-- GDP -->
+            <article class="indicator-card">
+              <h3>GDP (in US$)</h3>
+
+              <ng-container *ngIf="ind.gdp.year !== 0; else noGdp">
+                <p class="value">
+                  {{ ind.gdp.value | number:'1.0-0' }}
+                </p>
+              </ng-container>
+
+              <ng-template #noGdp>
+                <p class="value">No data</p>
+                <p class="meta">Year: —</p>
+              </ng-template>
+            </article>
+
+            <!-- Population -->
+            <article class="indicator-card">
+              <h3>Total Population</h3>
+
+              <ng-container *ngIf="ind.population.year !== 0; else noPop">
+                <p class="value">
+                  {{ ind.population.value | number:'1.0-0' }}
+                </p>
+              </ng-container>
+
+              <ng-template #noPop>
+                <p class="value">No data</p>
+              </ng-template>
+            </article>
+
+            <!-- Life expectancy -->
+            <article class="indicator-card">
+              <h3>Life Expectancy (in years)</h3>
+
+              <ng-container *ngIf="ind.lifeExpectancy.year !== 0; else noLifeExp">
+                <p class="value">
+                  {{ ind.lifeExpectancy.value | number:'1.1-1' }}
+                </p>
+              </ng-container>
+
+              <ng-template #noLifeExp>
+                <p class="value">No data</p>
+              </ng-template>
+            </article>
+
+          </div>
+        </section>
+
       </ng-container>
-  
-      <ng-template #errorTpl>
-        <p class="error">{{ error() }}</p>
-      </ng-template>
+    </ng-container>
+
+    <ng-template #errorTpl>
+      <p class="error">{{ error() }}</p>
     </ng-template>
-  </div>
-  
+  </ng-template>
+</div>

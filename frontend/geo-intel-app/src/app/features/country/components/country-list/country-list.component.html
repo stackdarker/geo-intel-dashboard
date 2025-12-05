@@ -85,20 +85,53 @@
     {{ error() }}
   </div>
 
-  <!-- Country list -->
+    <!-- Country list -->
   <ul *ngIf="!isLoading() && !error()">
     <li
       *ngFor="let c of filteredCountries()"
-      [routerLink]="['/countries', c.code]"
       class="country-item"
     >
-      <strong>{{ c.name }}</strong>
-      <span *ngIf="c.code">({{ c.code }})</span>
-      <span *ngIf="c.region"> – {{ c.region }}</span>
-      <span *ngIf="c.capital"> – Capital: {{ c.capital }}</span>
-      <span *ngIf="c.population">
-        – Population: {{ c.population | number }}
-      </span>
+      <!-- Selection checkbox -->
+      <input
+        type="checkbox"
+        class="country-select"
+        [checked]="isSelected(c.code)"
+        (click)="$event.stopPropagation()"
+        (change)="onSelectionChange(c.code, $event)"
+
+      />
+
+      <!-- Clickable content for navigation -->
+      <div
+        class="country-content"
+        [routerLink]="['/countries', c.code]"
+      >
+        <strong>{{ c.name }}</strong>
+        <span *ngIf="c.code">({{ c.code }})</span>
+        <span *ngIf="c.region"> – {{ c.region }}</span>
+        <span *ngIf="c.capital"> – Capital: {{ c.capital }}</span>
+        <span *ngIf="c.population">
+          – Population: {{ c.population | number }}
+        </span>
+      </div>
     </li>
   </ul>
+
+  <!-- Compare bar -->
+  <div
+    class="compare-bar"
+    *ngIf="selectedCodes().length >= 2"
+  >
+    <span>
+      {{ selectedCodes().length }} countries selected
+    </span>
+    <button
+      type="button"
+      class="compare-button"
+      (click)="goToCompare()"
+    >
+      Compare
+    </button>
+  </div>
+
 </section>

@@ -1,0 +1,102 @@
+<section class="country-compare">
+  <header class="compare-header">
+    <h2>Country Comparison</h2>
+    <a routerLink="/countries" class="back-link">← Back to Countries</a>
+  </header>
+
+  <div *ngIf="isLoading()">Loading comparison...</div>
+
+  <div *ngIf="error() && !isLoading()" class="error">
+    {{ error() }}
+  </div>
+
+  <div *ngIf="hasEnough() && !isLoading()">
+    <div class="compare-grid">
+
+      <!-- Header row -->
+      <div class="compare-row compare-row--header">
+        <div class="compare-cell compare-cell--label"></div>
+
+        <div
+          class="compare-cell compare-cell--country"
+          *ngFor="let c of countries()"
+        >
+          <div class="compare-country-header">
+            <h3>{{ c.name }}</h3>
+            <p class="code">{{ c.code }}</p>
+
+            <!-- Static vague map thumbnail + link to detail -->
+            <a
+              class="map-placeholder-link"
+              [routerLink]="['/countries', c.code]"
+              [title]="'View map and details for ' + c.name"
+            >
+              <span class="map-link-text">View map →</span>
+              <img
+                src="assets/map-placeholder.png"
+                class="map-placeholder-img"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Region / subregion -->
+      <div class="compare-row">
+        <div class="compare-cell compare-cell--label">Region</div>
+        <div
+          class="compare-cell"
+          *ngFor="let c of countries()"
+        >
+          {{ c.region || '—' }}<br />
+          <span class="subtext">{{ c.subregion || '' }}</span>
+        </div>
+      </div>
+
+      <!-- Capital -->
+      <div class="compare-row">
+        <div class="compare-cell compare-cell--label">Capital</div>
+        <div
+          class="compare-cell"
+          *ngFor="let c of countries()"
+        >
+          {{ c.capital || '—' }}
+        </div>
+      </div>
+
+      <!-- Population -->
+      <div class="compare-row">
+        <div class="compare-cell compare-cell--label">Population</div>
+        <div
+          class="compare-cell"
+          *ngFor="let c of countries()"
+        >
+          {{ c.population | number : '1.0-0' }}
+        </div>
+      </div>
+
+      <!-- Area -->
+      <div class="compare-row">
+        <div class="compare-cell compare-cell--label">Area (km²)</div>
+        <div
+          class="compare-cell"
+          *ngFor="let c of countries()"
+        >
+          {{ c.area != null ? (c.area | number:'1.0-0') : '—' }}
+        </div>
+      </div>
+  
+      <!-- Income Level-->
+      <div class="compare-row">
+        <div class="compare-cell compare-cell--label">Income Level</div>
+        <div
+          class="compare-cell"
+          *ngFor="let c of countries()"
+        >
+          {{ c.incomeLevel || '—' }}
+        </div>
+      </div>  
+
+    </div>
+  </div>
+</section>

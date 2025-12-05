@@ -14,7 +14,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/api/v1/countries")
-@CrossOrigin(origins = "http://localhost:4200")  // allow Angular dev
+@CrossOrigin(origins = "http://localhost:4200") 
 public class CountryController {
 
     private final CountryService countryService;

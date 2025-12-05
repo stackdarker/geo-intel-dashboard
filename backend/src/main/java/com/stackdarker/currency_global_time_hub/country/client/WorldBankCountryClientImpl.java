@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-
 @Component
 public class WorldBankCountryClientImpl implements WorldBankCountryClient {
 
@@ -47,13 +46,56 @@ public class WorldBankCountryClientImpl implements WorldBankCountryClient {
         );
     }
 
+    @Override
+    public String getIncomeLevel(String countryCode) {
+        String code = countryCode.toLowerCase();
+        String baseUrl = worldBankApiProperties.getBaseUrl(); 
+
+        String url = baseUrl + "/country/" + code + "?format=json";
+
+        try {
+            JsonNode root = restTemplate.getForObject(url, JsonNode.class);
+            if (root == null || !root.isArray() || root.size() < 2) {
+                return null;
+            }
+
+            JsonNode countriesArray = root.get(1);
+            if (countriesArray == null || !countriesArray.isArray() || countriesArray.size() == 0) {
+                return null;
+            }
+
+            JsonNode countryNode = countriesArray.get(0);
+            if (countryNode == null) {
+                return null;
+            }
+
+            JsonNode incomeLevelNode = countryNode.get("incomeLevel");
+            if (incomeLevelNode == null || incomeLevelNode.isNull()) {
+                return null;
+            }
+
+            JsonNode valueNode = incomeLevelNode.get("value");
+            if (valueNode == null || valueNode.isNull()) {
+                return null;
+            }
+
+            return valueNode.asText(); 
+            // possible values: "Low income", "Lower middle income", "Upper middle income", "High income"
+            // return null if not found
+        } catch (RestClientException ex) {
+            return null;
+        } catch (Exception ex) {
+
+            return null;
+        }
+    }
+
     private IndicatorValue fetchLatestIndicator(String countryCode,
                                                 String indicatorCode,
                                                 String indicatorName) {
 
         String code = countryCode.toLowerCase();
-        String baseUrl = worldBankApiProperties.getBaseUrl(); // ex: https://api.worldbank.org/v2
-
+        String baseUrl = worldBankApiProperties.getBaseUrl(); 
         String url = baseUrl +
                 "/country/" + code +
                 "/indicator/" + indicatorCode +
@@ -70,7 +112,6 @@ public class WorldBankCountryClientImpl implements WorldBankCountryClient {
                 return new IndicatorValue(indicatorCode, indicatorName, 0.0, 0);
             }
 
-            // find the most recent non-null value
             for (JsonNode entry : dataArray) {
                 JsonNode valueNode = entry.get("value");
                 if (valueNode != null && !valueNode.isNull()) {
@@ -90,10 +131,8 @@ public class WorldBankCountryClientImpl implements WorldBankCountryClient {
 
             return new IndicatorValue(indicatorCode, indicatorName, 0.0, 0);
         } catch (RestClientException ex) {
-            // network / timeout / I/O errors, just "no data"
             return new IndicatorValue(indicatorCode, indicatorName, 0.0, 0);
         } catch (Exception ex) {
-            // any unexpected parsing errors
             return new IndicatorValue(indicatorCode, indicatorName, 0.0, 0);
         }
     }

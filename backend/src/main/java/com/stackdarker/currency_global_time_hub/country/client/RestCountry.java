@@ -55,7 +55,8 @@ public class RestCountry {
     @JsonProperty("latlng")
     private List<Double> latlng;
 
-    // getters & setters
+    @JsonProperty("area")
+    private Double area;
 
     public String getCca2() { return cca2; }
     public void setCca2(String cca2) { this.cca2 = cca2; }
@@ -83,4 +84,7 @@ public class RestCountry {
 
     public List<Double> getLatlng() { return latlng; }
     public void setLatlng(List<Double> latlng) { this.latlng = latlng; }
+
+    public Double getArea() { return area; }
+    public void setArea(Double area) { this.area = area; }
 }

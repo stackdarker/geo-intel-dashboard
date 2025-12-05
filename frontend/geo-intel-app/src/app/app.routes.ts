@@ -10,6 +10,12 @@ export const routes: Routes = [
     { path: 'dashboard', component: DashboardHomeComponent },
     { path: 'countries', component: CountryListComponent },
     {
+      path: 'countries/compare',
+      loadComponent: () =>
+        import('./features/country/components/country-compare/country-compare.component')
+          .then(m => m.CountryCompareComponent),
+    },
+    {
       path: 'countries/:code',
       loadComponent: () =>
         import('./features/country/components/country-detail/country-detail.component')

@@ -9,4 +9,6 @@ public interface WorldBankCountryClient {
     IndicatorValue getPopulationTotal(String countryCode);
 
     IndicatorValue getLifeExpectancy(String countryCode);
+
+    String getIncomeLevel(String countryCode);
 }

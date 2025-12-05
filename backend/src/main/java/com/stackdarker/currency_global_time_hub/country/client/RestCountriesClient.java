@@ -16,7 +16,7 @@ import java.util.Map;
 public class RestCountriesClient implements CountryClient {
 
     private static final String REST_COUNTRIES_URL =
-            "https://restcountries.com/v3.1/all?fields=cca2,cca3,name,region,capital,population,currencies,languages,latlng";
+            "https://restcountries.com/v3.1/all?fields=cca2,cca3,name,region,capital,population,currencies,languages,latlng,area";
 
     private final RestTemplate restTemplate;
     private final WorldBankCountryClient worldBankCountryClient;
@@ -77,12 +77,16 @@ public class RestCountriesClient implements CountryClient {
             languageNames = new ArrayList<>(languages.values());
         }
 
-        double lat = 0.0;
-        double lng = 0.0;
+        Double lat = null;
+        Double lng = null;
         if (rc.getLatlng() != null && rc.getLatlng().size() >= 2) {
             lat = rc.getLatlng().get(0);
             lng = rc.getLatlng().get(1);
         }
+
+        Double area = rc.getArea();
+        // set later
+        String incomeLevel = null;
 
         return new CountryProfile(
                 code,
@@ -92,12 +96,14 @@ public class RestCountriesClient implements CountryClient {
                 population,
                 currencyCodes,
                 languageNames,
+                area,
+                incomeLevel,
                 lat,
                 lng
         );
     }
 
-    // search (filters in memory currently)
+    // search 
     @Override
     public List<CountryProfile> searchCountries(String query) {
         String q = query.toLowerCase();
@@ -113,7 +119,8 @@ public class RestCountriesClient implements CountryClient {
     @Override
     public CountryProfile getCountryProfile(String countryCode) {
         String codeUpper = countryCode.toUpperCase();
-        return getAllCountries().stream()
+    
+        CountryProfile profile = getAllCountries().stream()
                 .filter(c -> c.getCode().equalsIgnoreCase(codeUpper))
                 .findFirst()
                 .orElseGet(() -> new CountryProfile(
@@ -124,12 +131,18 @@ public class RestCountriesClient implements CountryClient {
                         0L,
                         List.of(),
                         List.of(),
-                        0.0,
-                        0.0
+                        null,  
+                        null,     
+                        null,     
+                        null    
                 ));
+    
+        String incomeLevel = worldBankCountryClient.getIncomeLevel(codeUpper);
+        profile.setIncomeLevel(incomeLevel);
+    
+        return profile;
     }
 
-    //indicators
     @Override
     public CountryIndicators getCountryIndicators(String countryCode) {
         String code = countryCode.toUpperCase();
