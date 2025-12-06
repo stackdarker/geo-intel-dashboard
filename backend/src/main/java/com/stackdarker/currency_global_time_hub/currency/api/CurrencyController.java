@@ -9,16 +9,21 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/v1/currency")
 @Validated
+@CrossOrigin(origins = "http://localhost:4200")
 public class CurrencyController {
 
     private final CurrencyService currencyService;
@@ -31,6 +36,7 @@ public class CurrencyController {
     public Map<String, CurrencySymbol> getSymbols() {
         return currencyService.getSymbols();
     }
+
 
     @GetMapping("/convert")
     public ConversionResult convert(
@@ -48,4 +54,13 @@ public class CurrencyController {
     ) {
         return currencyService.getLatestRates(base, symbols);
     }
+
+    @GetMapping("/symbols/list")
+    public ResponseEntity<List<CurrencySymbol>> getCurrencySymbols() {
+        Map<String, CurrencySymbol> map = currencyService.getSymbols();
+        List<CurrencySymbol> list = new ArrayList<>(map.values());
+        list.sort(Comparator.comparing(CurrencySymbol::getCode));
+        return ResponseEntity.ok(list);
+}
+
 }

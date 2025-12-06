@@ -21,9 +21,16 @@ export const routes: Routes = [
         import('./features/country/components/country-detail/country-detail.component')
           .then(m => m.CountryDetailComponent),
     },    
+
+    {
+      path: 'currencies',
+      loadComponent: () =>
+        import(
+          './features/currencies/components/currency-list/currency-list.component'
+        ).then((m) => m.CurrencyListComponent),
+    },
     { path: '**', redirectTo: 'dashboard' },
     // placeholders for future features
-    // { path: 'currencies', component: CurrencyListComponent },
     // { path: 'weather', component: WeatherViewComponent },
     // { path: 'timezones', component: TimezoneViewComponent },
     // { path: 'insights', component: InsightsViewComponent },

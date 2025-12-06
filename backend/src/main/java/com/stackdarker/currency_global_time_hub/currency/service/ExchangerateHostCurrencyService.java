@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 @Service
 public class ExchangerateHostCurrencyService implements CurrencyService {
 
+    private static final String PROVIDER_NAME = "Frankfurter";
+
     private final RestTemplate restTemplate;
     private final CurrencyApiProperties properties;
 
@@ -34,24 +36,19 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
     }
 
     // resolve and normalize base URL from properties
-
     private String resolveBaseUrl() {
         String baseUrl = properties.getBaseUrl();
 
-        // configured?
         if (baseUrl == null || baseUrl.isBlank()) {
             throw new ExternalApiException(
-                    "Frankfurter",
-                    "Base URL is not configured. Please set 'currency.api.base-url' in application.yml"
+                    PROVIDER_NAME,
+                    "Base URL is not configured. Please set 'currency.api.base-url' in application.properties"
             );
         }
 
-        // url scheme, is present?
         if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
             baseUrl = "https://" + baseUrl;
         }
-
-        // remove trailing slash to make things more predictable 
 
         if (baseUrl.endsWith("/")) {
             baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
@@ -60,14 +57,13 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
         return baseUrl;
     }
 
-    // fetch currency symboles from Frankfurter
-
+    // fetch currency symbols from Frankfurter (/currencies)
     @Override
     @Cacheable("currencySymbols")
     public Map<String, CurrencySymbol> getSymbols() {
         String baseUrl = resolveBaseUrl();
         String url = baseUrl + "/currencies";
-        // make GET request to /currencies
+
         try {
             ResponseEntity<Map<String, String>> response =
                     restTemplate.exchange(
@@ -76,11 +72,10 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
                             null,
                             new ParameterizedTypeReference<Map<String, String>>() {}
                     );
-            // check response status
-            // if not 2xx or body null, throw exception
+
             if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
                 throw new ExternalApiException(
-                        "Frankfurter",
+                        PROVIDER_NAME,
                         "Unexpected response status when fetching currencies: " + response.getStatusCode()
                 );
             }
@@ -95,7 +90,7 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
 
         } catch (RestClientException ex) {
             throw new ExternalApiException(
-                    "Frankfurter",
+                    PROVIDER_NAME,
                     "Error calling /currencies",
                     ex
             );
@@ -116,7 +111,7 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
                 fromCode,
                 toCode
         );
-        // make GET request to /latest
+
         try {
             ExternalLatestRatesResponse response =
                     restTemplate.getForObject(url, ExternalLatestRatesResponse.class);
@@ -124,7 +119,7 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
             if (response == null || response.getRates() == null
                     || !response.getRates().containsKey(toCode)) {
                 throw new ExternalApiException(
-                        "Frankfurter",
+                        PROVIDER_NAME,
                         "Failed to get conversion rate from " + fromCode + " to " + toCode
                 );
             }
@@ -146,7 +141,7 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
 
         } catch (RestClientException ex) {
             throw new ExternalApiException(
-                    "Frankfurter",
+                    PROVIDER_NAME,
                     "Error calling /latest for conversion",
                     ex
             );
@@ -185,7 +180,7 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
 
             if (response == null || response.getRates() == null) {
                 throw new ExternalApiException(
-                        "Frankfurter",
+                        PROVIDER_NAME,
                         "Failed to fetch latest rates"
                 );
             }
@@ -195,7 +190,7 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
 
         } catch (RestClientException ex) {
             throw new ExternalApiException(
-                    "Frankfurter",
+                    PROVIDER_NAME,
                     "Error calling /latest",
                     ex
             );

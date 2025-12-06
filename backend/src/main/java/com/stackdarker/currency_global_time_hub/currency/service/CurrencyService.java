@@ -15,4 +15,6 @@ public interface CurrencyService {
     ConversionResult convert(String from, String to, BigDecimal amount);
 
     RatesResponse getLatestRates(String base, List<String> symbols);
+    
 }
+

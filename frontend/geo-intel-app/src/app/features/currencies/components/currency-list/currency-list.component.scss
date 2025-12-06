@@ -1,0 +1,189 @@
+.currency-list {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: #f5f5f5;
+    background: #505050;
+  
+    .subtitle {
+      font-size: 0.875rem;
+      color: #d4d4d4;
+    }
+  }
+  
+  .currency-list__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  
+    h1 {
+      font-size: 1.4rem;
+      margin: 0;
+    }
+  }
+  
+  .currency-list__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  
+    .search-input {
+      min-width: 220px;
+      padding: 0.4rem 0.6rem;
+      border-radius: 0.5rem;
+      border: 1px solid #888888;
+      background: #b6b6b6;
+      color: #f5f5f5;
+      font-size: 0.9rem;
+  
+      &:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 1px #6366f1;
+      }
+  
+      &::placeholder {
+        color: #222222;
+      }
+    }
+  
+    .refresh-btn {
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.6rem;
+      background: #202020;
+      color: #e5e7eb;
+      cursor: pointer;
+      font-size: 0.9rem;
+  
+      &:hover:not(:disabled) {
+        background: #374151;
+      }
+  
+      &:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+    }
+  }
+  
+  .currency-list__table-wrapper {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid #1f2433;
+    background: #353535;
+  }
+  
+  .currency-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  
+    thead {
+      background: #202020;
+    }
+  
+    th,
+    td {
+      padding: 0.6rem 0.75rem;
+      text-align: left;
+    }
+  
+    th {
+      font-weight: 600;
+      color: #c5c5c5;
+      border-bottom: 1px solid #1f2933;
+    }
+  
+    tbody tr:nth-child(even) {
+      background: #353535;
+    }
+  
+    tbody tr:hover {
+      background: #1f2937;
+    }
+  
+    .code-cell {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        'Liberation Mono', 'Courier New', monospace;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+  }
+  
+  .state {
+    border-radius: 0.75rem;
+    padding: 1rem;
+    border: 1px dashed #374151;
+    background: #111827;
+    font-size: 0.9rem;
+  
+    &--loading {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+  
+      .skeleton-row {
+        height: 0.9rem;
+        border-radius: 0.25rem;
+        background: linear-gradient(
+          90deg,
+          #1f2937 0%,
+          #374151 50%,
+          #1f2937 100%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.2s ease-in-out infinite;
+      }
+    }
+  
+    &--error {
+      color: #fecaca;
+  
+      button {
+        margin-top: 0.5rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.5rem;
+        border: none;
+        background: #b91c1c;
+        color: white;
+        cursor: pointer;
+        font-size: 0.85rem;
+  
+        &:hover {
+          background: #dc2626;
+        }
+      }
+    }
+  
+    &--empty {
+      color: #9ca3af;
+    }
+  }
+  
+  @keyframes skeleton-loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .currency-list {
+      padding: 1rem;
+    }
+  
+    .currency-list__actions {
+      width: 100%;
+  
+      .search-input {
+        flex: 1;
+      }
+    }
+  }
+  
