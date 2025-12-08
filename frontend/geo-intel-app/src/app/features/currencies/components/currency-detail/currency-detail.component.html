@@ -34,7 +34,19 @@
   
       <!-- Conversion card -->
       <article class="card">
-        <h2>Quick Conversion</h2>
+        <div class="card-header-row">
+          <h2>Quick Conversion</h2>
+          <button
+            type="button"
+            class="swap-btn"
+            (click)="swapCurrencies()"
+            [disabled]="converting()"
+            title="Swap from/to currencies"
+          >
+            ↔
+          </button>
+        </div>
+  
         <div class="card-body">
           <form [formGroup]="form" (ngSubmit)="onSubmit()" class="conversion-form">
             <div class="field-group">

@@ -98,4 +98,20 @@ export class CurrencyDetailComponent implements OnInit {
       },
     });
   }
+
+  swapCurrencies(): void {
+    const currentBase = this.code().toUpperCase();
+    const currentTo =
+      ((this.form.get('to')?.value as string | null) ?? 'USD').toUpperCase();
+
+    this.code.set(currentTo);
+    this.form.patchValue({ to: currentBase });
+
+    this.conversionResult.set(null);
+    this.conversionError.set(null);
+  }
+
+    getCurrentToCode(): string {
+        return ((this.form.get('to')?.value as string | null) ?? 'USD').toUpperCase();
+  }
 }
