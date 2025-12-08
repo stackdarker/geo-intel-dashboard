@@ -1,0 +1,82 @@
+<section class="country-widget">
+    <header class="country-widget__header">
+      <div>
+        <h2>Top countries</h2>
+        <p class="subtitle">
+          Highest populations by region.
+        </p>
+      </div>
+  
+      <div class="country-widget__controls">
+        <label>
+          Region:
+          <select [(ngModel)]="regionModel">
+            <option value="ALL">All regions</option>
+            <option *ngFor="let r of regions()" [value]="r">
+              {{ r }}
+            </option>
+          </select>
+        </label>
+      </div>
+    </header>
+  
+    <!-- States -->
+    <div *ngIf="loading()" class="state state--loading">
+      Loading countries…
+    </div>
+  
+    <div *ngIf="!loading() && error()" class="state state--error">
+      {{ error() }}
+    </div>
+  
+    <div
+      *ngIf="!loading() && !error()"
+      class="country-widget__body"
+    >
+      <p class="as-of" *ngIf="countries().length > 0">
+        Showing top {{ topCountries().length }} of
+        {{ totalCountriesInRegion() }} countries
+        <span *ngIf="totalPopulation()">
+          · Total population:
+          {{ totalPopulation() | number }}
+        </span>
+      </p>
+  
+      <div *ngIf="topCountries().length === 0" class="state state--empty">
+        No countries available for this region yet.
+      </div>
+  
+      <table
+        *ngIf="topCountries().length > 0"
+        class="country-widget__table"
+      >
+        <thead>
+          <tr>
+            <th>Country</th>
+            <th>Region</th>
+            <th>Population</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of topCountries()">
+            <td class="name-cell">
+              {{ c.name }}
+              <span class="code" *ngIf="c.code">({{ c.code }})</span>
+            </td>
+            <td>{{ c.region || '—' }}</td>
+            <td>{{ c.population | number }}</td>
+            <td class="actions-cell">
+              <a
+                [routerLink]="['/countries', c.code]"
+                class="details-link"
+              >
+                View details →
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  
