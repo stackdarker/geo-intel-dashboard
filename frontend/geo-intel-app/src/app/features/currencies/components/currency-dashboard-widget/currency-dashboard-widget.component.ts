@@ -7,14 +7,18 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { CurrencyApiService } from '../../services/currency-api.service';
 import { LatestRatesResponse } from '../../models/latest-rates.model';
 
+const FX_BASE_PREF_KEY = 'geoDashboard.fxBaseCurrency'; // preference key
+
 @Component({
   selector: 'app-currency-dashboard-widget',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './currency-dashboard-widget.component.html',
   styleUrls: ['./currency-dashboard-widget.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,12 +34,56 @@ export class CurrencyDashboardWidgetComponent implements OnInit {
   readonly loading = computed(() => this._loading());
   readonly error = computed(() => this._error());
 
-  // initial base & majors we care about
+  // allowed base currencies we support in the UI
+  readonly allowedBases = ['USD', 'EUR', 'GBP'];
+
+  // base stored as a signal (we'll back it with localStorage)
   readonly base = signal<string>('USD');
+
+  // majors to display against the base
   readonly majors = ['EUR', 'GBP', 'JPY', 'CAD', 'AUD'];
 
+  // bridge for ngModel: getter/setter around the signal
+  get baseModel(): string {
+    return this.base();
+  }
+
+  set baseModel(value: string) {
+    this.onBaseChange(value);
+  }
+
   ngOnInit(): void {
+    this.loadBasePreference();
     this.loadRates();
+  }
+
+  private loadBasePreference(): void {
+    if (typeof localStorage === 'undefined') {
+      return;
+    }
+
+    try {
+      const stored = localStorage.getItem(FX_BASE_PREF_KEY);
+      if (stored) {
+        const normalized = stored.toUpperCase();
+        if (this.allowedBases.includes(normalized)) {
+          this.base.set(normalized);
+        }
+      }
+    } catch {
+      // ignore storage errors; fall back to default 'USD'
+    }
+  }
+
+  private saveBasePreference(base: string): void {
+    if (typeof localStorage === 'undefined') {
+      return;
+    }
+    try {
+      localStorage.setItem(FX_BASE_PREF_KEY, base);
+    } catch {
+      // ignore; not fatal
+    }
   }
 
   loadRates(): void {
@@ -56,9 +104,17 @@ export class CurrencyDashboardWidgetComponent implements OnInit {
   }
 
   onBaseChange(newBase: string): void {
-    if (newBase === this.base()) return;
-    this.base.set(newBase);
+    const normalized = (newBase ?? '').toUpperCase();
+    if (!this.allowedBases.includes(normalized)) {
+      return;
+    }
+    if (normalized === this.base()) {
+      return;
+    }
+
+    this.base.set(normalized);
     this._data.set(null);
+    this.saveBasePreference(normalized);
     this.loadRates();
   }
 

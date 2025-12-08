@@ -118,6 +118,24 @@
       font-weight: 600;
       color: #e5e7eb;
     }
+
+    .actions-col {
+        width: 120px;
+      }
+    
+      .actions-cell {
+        text-align: right;
+      }
+    
+      .details-link {
+        font-size: 0.8rem;
+        color: #93c5fd;
+        text-decoration: none;
+    
+        &:hover {
+          text-decoration: underline;
+          color: #bfdbfe;
+        }
   }
   
   .state {
@@ -131,4 +149,4 @@
       color: #fecaca;
     }
   }
-  
+  }
