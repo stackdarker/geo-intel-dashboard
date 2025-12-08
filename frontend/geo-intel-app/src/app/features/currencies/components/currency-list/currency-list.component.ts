@@ -14,6 +14,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { CurrencyApiService } from '../../services/currency-api.service';
 import { Currency } from '../../models/currency.model';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-currency-list',
@@ -35,7 +37,7 @@ export class CurrencyListComponent implements OnInit {
   readonly loading = this.api.loading;
   readonly error = this.api.error;
 
-  // local UI-only signal
+
   private readonly searchTerm = signal<string>('');
 
   // derived, filtered list
@@ -75,5 +77,11 @@ export class CurrencyListComponent implements OnInit {
 
   trackByCode(_index: number, item: Currency): string {
     return item.code;
+  }
+
+  private router = inject(Router);
+
+  goToDetail(code: string): void {
+    this.router.navigate(['/currencies', code]);
   }
 }

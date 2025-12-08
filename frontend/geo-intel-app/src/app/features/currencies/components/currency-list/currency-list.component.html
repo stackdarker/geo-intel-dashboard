@@ -1,71 +1,72 @@
 <section class="currency-list">
-    <header class="currency-list__header">
-      <div>
-        <h1>Currencies</h1>
-        <p class="subtitle">
-          Browse supported currencies.
-        </p>
-      </div>
-  
-      <div class="currency-list__actions">
-        <input
-          type="text"
-          class="search-input"
-          placeholder="Search by code or name…"
-          [formControl]="searchControl"
-        />
-        <button
-          type="button"
-          class="refresh-btn"
-          (click)="onRetry()"
-          [disabled]="loading()"
-          title="Force refresh from backend"
+  <header class="currency-list__header">
+    <div>
+      <h1>Currencies</h1>
+      <p class="subtitle">
+        Browse supported currencies.
+      </p>
+    </div>
+
+    <div class="currency-list__actions">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search by code or name…"
+        [formControl]="searchControl"
+      />
+      <button
+        type="button"
+        class="refresh-btn"
+        (click)="onRetry()"
+        [disabled]="loading()"
+        title="Force refresh from backend"
+      >
+        ⟳
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading -->
+  <div *ngIf="loading()" class="state state--loading">
+    <div class="skeleton-row" *ngFor="let _ of [1, 2, 3, 4, 5]"></div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="!loading() && error()" class="state state--error">
+    <p>{{ error() }}</p>
+    <button type="button" (click)="onRetry()">Retry</button>
+  </div>
+
+  <!-- Empty -->
+  <div
+    *ngIf="!loading() && !error() && filteredCurrencies().length === 0"
+    class="state state--empty"
+  >
+    <p>No currencies match your search.</p>
+  </div>
+
+  <!-- List -->
+  <div
+    *ngIf="!loading() && !error() && filteredCurrencies().length > 0"
+    class="currency-list__table-wrapper"
+  >
+    <table class="currency-table">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let currency of filteredCurrencies(); trackBy: trackByCode"
+          (click)="goToDetail(currency.code)"
+          class="clickable-row"
         >
-          ⟳
-        </button>
-      </div>
-    </header>
-  
-    <!-- Loading -->
-    <div *ngIf="loading()" class="state state--loading">
-      <div class="skeleton-row" *ngFor="let _ of [1, 2, 3, 4, 5]"></div>
-    </div>
-  
-    <!-- Error -->
-    <div *ngIf="!loading() && error()" class="state state--error">
-      <p>{{ error() }}</p>
-      <button type="button" (click)="onRetry()">Retry</button>
-    </div>
-  
-    <!-- Empty -->
-    <div
-      *ngIf="!loading() && !error() && filteredCurrencies().length === 0"
-      class="state state--empty"
-    >
-      <p>No currencies match your search.</p>
-    </div>
-  
-    <!-- List -->
-    <div
-      *ngIf="!loading() && !error() && filteredCurrencies().length > 0"
-      class="currency-list__table-wrapper"
-    >
-      <table class="currency-table">
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let currency of filteredCurrencies(); trackBy: trackByCode"
-          >
-            <td class="code-cell">{{ currency.code }}</td>
-            <td>{{ currency.description }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  
+          <td class="code-cell">{{ currency.code }}</td>
+          <td>{{ currency.description }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

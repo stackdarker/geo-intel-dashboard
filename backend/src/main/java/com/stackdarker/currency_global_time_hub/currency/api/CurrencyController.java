@@ -5,9 +5,9 @@ import com.stackdarker.currency_global_time_hub.currency.model.CurrencySymbol;
 import com.stackdarker.currency_global_time_hub.currency.model.RatesResponse;
 import com.stackdarker.currency_global_time_hub.currency.service.CurrencyService;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -37,16 +37,6 @@ public class CurrencyController {
         return currencyService.getSymbols();
     }
 
-
-    @GetMapping("/convert")
-    public ConversionResult convert(
-        @RequestParam @NotBlank @Pattern(regexp = "^[A-Z]{3}$") String from,
-        @RequestParam @NotBlank @Pattern(regexp = "^[A-Z]{3}$") String to,
-        @RequestParam @DecimalMin(value = "0.01") BigDecimal amount
-    ) {
-        return currencyService.convert(from, to, amount);
-    }
-
     @GetMapping("/rates")
     public RatesResponse getLatestRates(
             @RequestParam(defaultValue = "USD") String base,
@@ -62,5 +52,22 @@ public class CurrencyController {
         list.sort(Comparator.comparing(CurrencySymbol::getCode));
         return ResponseEntity.ok(list);
 }
+    @GetMapping("/convert")
+    public ResponseEntity<ConversionResult> convert(
+        @RequestParam("from") String from,
+        @RequestParam("to") String to,
+        @RequestParam("amount") BigDecimal amount
+        ) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Amount must be greater than zero"
+        );
+    }
+
+    ConversionResult result = currencyService.convert(from, to, amount);
+    return ResponseEntity.ok(result);
+}
+
 
 }

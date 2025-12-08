@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Currency } from '../models/currency.model';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { ConversionResult } from '../models/conversion-result.model';
 
 @Injectable({
   providedIn: 'root',
@@ -45,4 +46,17 @@ export class CurrencyApiService {
     )
     .subscribe();
   }
+
+  convert(from: string, to: string, amount: number) {
+    return this.http.get<ConversionResult>('/currency/convert', {
+      params: {
+        from,
+        to,
+        amount: amount.toString(),
+      },
+    });
+  }
+  
 }
+
+
