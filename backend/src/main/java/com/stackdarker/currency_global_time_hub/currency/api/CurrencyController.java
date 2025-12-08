@@ -4,6 +4,8 @@ import com.stackdarker.currency_global_time_hub.currency.model.ConversionResult;
 import com.stackdarker.currency_global_time_hub.currency.model.CurrencySymbol;
 import com.stackdarker.currency_global_time_hub.currency.model.RatesResponse;
 import com.stackdarker.currency_global_time_hub.currency.service.CurrencyService;
+import com.stackdarker.currency_global_time_hub.currency.model.HistoricalRatePoint;
+
 
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -45,6 +47,21 @@ public class CurrencyController {
         return currencyService.getLatestRates(base, symbols);
     }
 
+    @GetMapping("/history")
+    public ResponseEntity<List<HistoricalRatePoint>> getHistoricalRates(
+        @RequestParam("from") String from,
+        @RequestParam("to") String to,
+        @RequestParam(name = "days", defaultValue = "30") int days
+    ) {
+    if (days <= 0) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    List<HistoricalRatePoint> points = currencyService.getHistoricalRates(from, to, days);
+    return ResponseEntity.ok(points);
+    }
+
+
     @GetMapping("/symbols/list")
     public ResponseEntity<List<CurrencySymbol>> getCurrencySymbols() {
         Map<String, CurrencySymbol> map = currencyService.getSymbols();
@@ -67,6 +84,8 @@ public class CurrencyController {
 
     ConversionResult result = currencyService.convert(from, to, amount);
     return ResponseEntity.ok(result);
+
+    
 }
 
 

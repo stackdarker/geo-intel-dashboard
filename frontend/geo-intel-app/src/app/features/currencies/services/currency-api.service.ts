@@ -4,6 +4,8 @@ import { Currency } from '../models/currency.model';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ConversionResult } from '../models/conversion-result.model';
+import { HistoricalRatePoint } from '../models/historical-rate-point.model';
+
 
 @Injectable({
   providedIn: 'root',
@@ -56,6 +58,17 @@ export class CurrencyApiService {
       },
     });
   }
+
+  getHistory(from: string, to: string, days: number) {
+    return this.http.get<HistoricalRatePoint[]>('/currency/history', {
+      params: {
+        from,
+        to,
+        days: days.toString(),
+      },
+    });
+  }
+  
   
 }
 

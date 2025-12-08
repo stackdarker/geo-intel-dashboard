@@ -23,7 +23,8 @@ public class CacheConfig {
                 "countryProfile",
                 "countryIndicators",
                 "currentWeather",
-                "countryAll"
+                "countryAll",
+                "historicalRates"
         );
 
         cacheManager.setCaffeine(

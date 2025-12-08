@@ -18,11 +18,17 @@ import {
 import { CurrencyApiService } from '../../services/currency-api.service';
 import { Currency } from '../../models/currency.model';
 import { ConversionResult } from '../../models/conversion-result.model';
+import { CurrencyHistoryChartComponent } from '../currency-history-chart/currency-history-chart.component';
 
 @Component({
   selector: 'app-currency-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    CurrencyHistoryChartComponent,
+  ],
   templateUrl: './currency-detail.component.html',
   styleUrls: ['./currency-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,28 +38,22 @@ export class CurrencyDetailComponent implements OnInit {
   private api = inject(CurrencyApiService);
   private fb = inject(FormBuilder);
 
-    // current currency code from route
   readonly code = signal<string>('');
 
-  // currencies from service
   readonly currencies = this.api.currencies;
 
-    // current currency details
   readonly currency = computed<Currency | undefined>(() => {
     const list = this.currencies();
-    const code = this.code().toUpperCase();
-    return list.find((c) => c.code.toUpperCase() === code);
+    const c = this.code().toUpperCase();
+    return list.find((cur) => cur.code.toUpperCase() === c);
   });
 
-  // conversion form
   form!: FormGroup;
 
-  // conversion state
   readonly converting = signal(false);
   readonly conversionError = signal<string | null>(null);
   readonly conversionResult = signal<ConversionResult | null>(null);
 
-  // list of target currencies for conversion
   readonly targetCurrencies = computed<Currency[]>(() => {
     const list = this.currencies();
     const base = this.code().toUpperCase();
@@ -97,14 +97,5 @@ export class CurrencyDetailComponent implements OnInit {
         this.converting.set(false);
       },
     });
-  }
-
-  getTargetCurrencyName(code: string | null | undefined): string {
-    if (!code) return '';
-    const upper = code.toUpperCase();
-    const found = this.currencies().find(
-      (c) => c.code.toUpperCase() === upper
-    );
-    return found?.description ?? upper;
   }
 }

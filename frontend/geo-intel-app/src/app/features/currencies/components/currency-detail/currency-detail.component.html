@@ -13,20 +13,20 @@
     <div class="currency-detail__layout">
       <!-- Profile card -->
       <article class="card">
-        <h2></h2>
+        <h2>Profile</h2>
         <div class="card-body">
-          <div *ngIf="currency(); else missingCurrency">
-            <p class="label">Name</p>
-            <p class="value">{{ currency()!.description }}</p>
-            <br>
+          <ng-container *ngIf="currency(); else missingCurrency">
             <p class="label">Code</p>
             <p class="value">{{ currency()!.code }}</p>
-          </div>
+  
+            <p class="label">Name</p>
+            <p class="value">{{ currency()!.description }}</p>
+          </ng-container>
   
           <ng-template #missingCurrency>
             <p class="muted">
-              Currency metadata not found in cache yet. Try going back to the
-              list and re-opening this page.
+              Currency metadata not found in cache yet. Try going back to the list
+              and re-opening this page.
             </p>
           </ng-template>
         </div>
@@ -74,7 +74,7 @@
             </button>
           </form>
   
-          <div *ngIf="conversionError()" class="state state--error">
+          <div *ngIf="conversionError()" class="state--error">
             {{ conversionError() }}
           </div>
   
@@ -96,5 +96,15 @@
         </div>
       </article>
     </div>
+  
+    <!-- Historical chart row -->
+    <div class="currency-detail__layout" style="margin-top: 1.25rem;">
+        <app-currency-history-chart
+          [fromCode]="code()"
+          [toCode]="form.get('to')?.value || 'USD'"
+          style="grid-column: 1 / -1;"
+        ></app-currency-history-chart>
+      </div>
+      
   </section>
   

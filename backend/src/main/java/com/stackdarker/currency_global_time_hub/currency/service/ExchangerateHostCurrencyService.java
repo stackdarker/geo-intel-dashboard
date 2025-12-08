@@ -4,7 +4,9 @@ import com.stackdarker.currency_global_time_hub.common.exception.ExternalApiExce
 import com.stackdarker.currency_global_time_hub.config.CurrencyApiProperties;
 import com.stackdarker.currency_global_time_hub.currency.model.ConversionResult;
 import com.stackdarker.currency_global_time_hub.currency.model.CurrencySymbol;
+import com.stackdarker.currency_global_time_hub.currency.model.ExternalHistoricalRatesResponse;
 import com.stackdarker.currency_global_time_hub.currency.model.ExternalLatestRatesResponse;
+import com.stackdarker.currency_global_time_hub.currency.model.HistoricalRatePoint;
 import com.stackdarker.currency_global_time_hub.currency.model.RatesResponse;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,6 +22,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class ExchangerateHostCurrencyService implements CurrencyService {
@@ -196,4 +199,78 @@ public class ExchangerateHostCurrencyService implements CurrencyService {
             );
         }
     }
+    
+// fetch historical rates for a currency pair over a number of days
+    @Override
+    @Cacheable(
+        cacheNames = "historicalRates",
+        key = "#from.toUpperCase() + '_' + #to.toUpperCase() + '_' + #days"
+)
+    public List<HistoricalRatePoint> getHistoricalRates(String from, String to, int days) {
+    if (days <= 0) {
+        throw new ExternalApiException(
+                PROVIDER_NAME,
+                "Days must be positive for historical rates"
+        );
+    }
+
+    int maxDays = 365;
+    if (days > maxDays) {
+        days = maxDays;
+    }
+
+    String baseUrl = resolveBaseUrl();
+    String fromCode = from.toUpperCase(Locale.ROOT);
+    String toCode = to.toUpperCase(Locale.ROOT);
+
+    var end = LocalDate.now();
+    var start = end.minusDays(days);
+    DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
+
+    String url = String.format(
+            "%s/%s..%s?from=%s&symbols=%s",
+            baseUrl,
+            start.format(fmt),
+            end.format(fmt),
+            fromCode,
+            toCode
+    );
+
+    try {
+        ExternalHistoricalRatesResponse response =
+                restTemplate.getForObject(url, ExternalHistoricalRatesResponse.class);
+
+        if (response == null || response.getRates() == null) {
+            throw new ExternalApiException(
+                    PROVIDER_NAME,
+                    "Failed to fetch historical rates"
+            );
+        }
+
+        List<HistoricalRatePoint> points = response.getRates().entrySet()
+                .stream()
+                .map(entry -> {
+                    LocalDate date = LocalDate.parse(entry.getKey());
+                    var rateMap = entry.getValue();
+                    BigDecimal rate = rateMap != null ? rateMap.get(toCode) : null;
+                    if (rate == null) {
+                        return null;
+                    }
+                    return new HistoricalRatePoint(date, rate);
+                })
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(HistoricalRatePoint::getDate))
+                .toList();
+
+        return points;
+
+    } catch (RestClientException ex) {
+        throw new ExternalApiException(
+                PROVIDER_NAME,
+                "Error calling historical range endpoint",
+                ex
+        );
+    }
+}
+
 }

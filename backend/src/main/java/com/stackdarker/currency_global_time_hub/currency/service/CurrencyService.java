@@ -3,6 +3,7 @@ package com.stackdarker.currency_global_time_hub.currency.service;
 import com.stackdarker.currency_global_time_hub.currency.model.ConversionResult;
 import com.stackdarker.currency_global_time_hub.currency.model.CurrencySymbol;
 import com.stackdarker.currency_global_time_hub.currency.model.RatesResponse;
+import com.stackdarker.currency_global_time_hub.currency.model.HistoricalRatePoint;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,6 +16,8 @@ public interface CurrencyService {
     ConversionResult convert(String from, String to, BigDecimal amount);
 
     RatesResponse getLatestRates(String base, List<String> symbols);
+
+    List<HistoricalRatePoint> getHistoricalRates(String from, String to, int days);
     
 }
 

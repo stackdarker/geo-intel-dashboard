@@ -1,0 +1,39 @@
+<section class="history-card">
+    <header class="history-card__header">
+      <h2>Historical rate</h2>
+      <div class="history-card__ranges">
+        <button
+          type="button"
+          *ngFor="let d of daysOptions"
+          (click)="onChangeDays(d)"
+          [class.active]="selectedDays() === d"
+        >
+          {{ d }}d
+        </button>
+      </div>
+    </header>
+  
+    <!-- States -->
+    <div *ngIf="loading()" class="history-card__state">
+      Loading history…
+    </div>
+  
+    <div
+      *ngIf="!loading() && error()"
+      class="history-card__state history-card__state--error"
+    >
+      {{ error() }}
+    </div>
+  
+    <div
+      *ngIf="!loading() && !error() && points().length === 0"
+      class="history-card__state"
+    >
+      No historical data available.
+    </div>
+  
+    <div class="history-card__chart">
+      <canvas #chartCanvas></canvas>
+    </div>
+  </section>
+  
