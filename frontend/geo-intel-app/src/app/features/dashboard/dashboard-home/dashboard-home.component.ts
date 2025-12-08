@@ -1,11 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { CurrencyDashboardWidgetComponent } from '../../../features/currencies/components/currency-dashboard-widget/currency-dashboard-widget.component';
 
 @Component({
   selector: 'app-dashboard-home',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, CurrencyDashboardWidgetComponent],
   templateUrl: './dashboard-home.component.html',
-  styleUrl: './dashboard-home.component.scss'
+  styleUrls: ['./dashboard-home.component.scss'],
 })
-export class DashboardHomeComponent {
-
-}
+export class DashboardHomeComponent {}

@@ -5,6 +5,8 @@ import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ConversionResult } from '../models/conversion-result.model';
 import { HistoricalRatePoint } from '../models/historical-rate-point.model';
+import { LatestRatesResponse } from '../models/latest-rates.model';
+
 
 
 @Injectable({
@@ -68,8 +70,18 @@ export class CurrencyApiService {
       },
     });
   }
+
+  getLatestRates(base: string, symbols: string[]) {
+    const params: { [key: string]: string } = {
+      base,
+    };
   
+    if (symbols && symbols.length > 0) {
+      params['symbols'] = symbols.join(',');
+    }
   
+    return this.http.get<LatestRatesResponse>('/currency/latest', { params });
+  }
 }
 
 

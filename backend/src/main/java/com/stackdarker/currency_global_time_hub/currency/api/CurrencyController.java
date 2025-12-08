@@ -39,12 +39,13 @@ public class CurrencyController {
         return currencyService.getSymbols();
     }
 
-    @GetMapping("/rates")
-    public RatesResponse getLatestRates(
-            @RequestParam(defaultValue = "USD") String base,
-            @RequestParam(required = false) List<String> symbols
+    @GetMapping("/latest")
+    public ResponseEntity<RatesResponse> getLatestRates(
+            @RequestParam(name = "base", required = false, defaultValue = "USD") String base,
+            @RequestParam(name = "symbols", required = false) List<String> symbols
     ) {
-        return currencyService.getLatestRates(base, symbols);
+        RatesResponse response = currencyService.getLatestRates(base, symbols);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/history")

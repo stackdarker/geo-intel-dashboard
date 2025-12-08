@@ -1,21 +1,26 @@
-// PLACEHOLDER!
-
-.countries-page {
+.country-list {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
+  background: #505050;
+  color: #f5f5f5;
+
+  @media (max-width: 640px) {
+    padding: 1rem;
+  }
 }
 
 .countries-header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 
-  h1 {
+  h2 {
     margin: 0;
-    font-size: 1.75rem;
+    font-size: 1.4rem;
   }
 
   .meta {
@@ -23,15 +28,21 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    color: #d4d4d4;
   }
 
   .link-btn {
     background: none;
     border: none;
-    color: #3b82f6;
+    color: #93c5fd;
     cursor: pointer;
     padding: 0;
     font: inherit;
+    text-decoration: underline;
+
+    &:hover {
+      color: #bfdbfe;
+    }
   }
 }
 
@@ -49,22 +60,27 @@
       font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      color: #6b7280;
+      color: #c5c5c5;
     }
 
     input,
     select {
       padding: 0.5rem 0.75rem;
       border-radius: 0.5rem;
-      border: 1px solid #d1d5db;
+      border: 1px solid #888888;
       font-size: 0.95rem;
-    }
+      background: #b6b6b6;
+      color: #111827;
 
-    input:focus,
-    select:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+      &:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 1px #6366f1;
+      }
+
+      &::placeholder {
+        color: #222222;
+      }
     }
   }
 }
@@ -77,109 +93,54 @@
   .chip {
     padding: 0.25rem 0.6rem;
     border-radius: 999px;
-    background-color: #e5e7eb;
+    background-color: #202020;
+    border: 1px solid #4b5563;
     font-size: 0.8rem;
+    color: #e5e7eb;
   }
 }
 
-.countries-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1rem;
+.country-list > div {
+  font-size: 0.9rem;
 }
 
-.country-card {
+.country-list .error {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: #b91c1c;
+  color: #fee2e2;
+  font-size: 0.85rem;
+}
+
+.country-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
-  gap: 0.75rem;
-  padding: 0.9rem 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid #e5e7eb;
-  background-color: #ffffff;
-  text-decoration: none;
-  color: inherit;
-  align-items: center;
-  transition: box-shadow 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
-
-  &:hover {
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
-    transform: translateY(-2px);
-    border-color: #cbd5f5;
-  }
-}
-
-.flag-wrapper {
-  flex: 0 0 60px;
-  height: 40px;
-  overflow: hidden;
-  border-radius: 0.4rem;
-  border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-
-.card-content {
-  flex: 1;
-  min-width: 0;
-
-  h2 {
-    margin: 0 0 0.25rem;
-    font-size: 1rem;
-    font-weight: 600;
-  }
-
-  .subtitle {
-    margin: 0 0 0.25rem;
-    font-size: 0.85rem;
-    color: #6b7280;
-  }
-
-  .meta-line {
-    margin: 0;
-    font-size: 0.85rem;
-  }
-}
-
-.chevron {
-  font-size: 1.3rem;
-  color: #9ca3af;
-}
-
-.empty-state {
-  padding: 2rem;
-  text-align: center;
-  border-radius: 0.75rem;
-  border: 1px dashed #d1d5db;
-  background-color: #f9fafb;
-
-  h3 {
-    margin-bottom: 0.25rem;
-  }
-
-  p {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    color: #6b7280;
-  }
-
-  button {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    border: none;
-    background-color: #3b82f6;
-    color: #ffffff;
-    cursor: pointer;
-  }
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .country-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #1f2433;
+  background-color: #353535;
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.1s ease,
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.country-item:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+  border-color: #6366f1;
+  background-color: #1f2937;
 }
 
 .country-select {
@@ -189,6 +150,19 @@
 .country-content {
   flex: 1;
   cursor: pointer;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+
+  strong {
+    font-weight: 600;
+    color: #f9fafb;
+  }
+
+  span {
+    color: #e5e7eb;
+  }
 }
 
 .compare-bar {
@@ -203,6 +177,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  border: 1px solid #1f2433;
 
   .compare-button {
     padding: 0.4rem 1rem;
@@ -212,6 +187,9 @@
     color: #ffffff;
     cursor: pointer;
     font-size: 0.9rem;
+
+    &:hover {
+      background-color: #2563eb;
+    }
   }
 }
-

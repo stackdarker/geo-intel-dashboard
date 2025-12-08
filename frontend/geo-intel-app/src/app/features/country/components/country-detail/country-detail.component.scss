@@ -3,36 +3,52 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-}
+  background: #505050;
+  color: #f5f5f5;
 
+  @media (max-width: 640px) {
+    padding: 1rem;
+  }
+}
 .detail-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
 
   .title-block {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    color:#131313;
   }
 
   h2 {
     margin: 0;
     font-size: 1.75rem;
+    color: #f9fafb;
   }
 
   .subtitle {
     margin: 0;
-    font-size: 1.1rem;
-    color: #dddddd;
-    font-weight: bold;
+    font-size: 1.05rem;
+    color: #d4d4d4;
+    font-weight: 500;
   }
 
   .back-link {
     font-size: 0.85rem;
     text-decoration: none;
-    color: #3b82f6;
+    color: #93c5fd;
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.5rem;
+    border: 1px solid #4b5563;
+    background: #202020;
+
+    &:hover {
+      background: #1f2937;
+      color: #bfdbfe;
+    }
   }
 }
 
@@ -48,14 +64,21 @@
 
 .panel {
   border-radius: 0.75rem;
-  background-color: #2b2b2b;
-  border: 1px solid #000000;
+  background-color: #353535;
+  border: 1px solid #1f2433;
   padding: 1rem 1.25rem;
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.03);
-  color: #d3d2d2;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  color: #f5f5f5;
+
+  h3,
+  h2 {
+    color: #f9fafb;
+  }
 }
 
+/* Profile panel */
 .profile-panel {
+  display: grid;
   grid-template-columns: 120px minmax(0, 1fr);
   gap: 1rem;
 
@@ -68,8 +91,8 @@
   width: 100%;
   border-radius: 0.75rem;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
-  background-color: #f9fafb;
+  border: 1px solid #1f2433;
+  background-color: #111827;
 
   img {
     width: 100%;
@@ -93,17 +116,16 @@
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #6b7280;
+    color: #c5c5c5;
   }
 
   .value {
     font-size: 0.95rem;
     font-weight: 500;
+    color: #f9fafb;
   }
 }
-
-/* MAP PANEL */
-
+/* Map panel */
 .map-panel {
   h3,
   h2 {
@@ -114,12 +136,12 @@
   .coords {
     margin-top: 0;
     margin-bottom: 0.5rem;
-    font-size: 1.0rem;
-    color: #9b9b9b;
+    font-size: 0.95rem;
+    color: #d4d4d4;
   }
 }
 
-/* New static map placeholder styles (asset-based) */
+/* Static map placeholder */
 .map-placeholder-link {
   margin-top: 0.5rem;
   text-decoration: none;
@@ -134,7 +156,7 @@
 
   &:hover .map-placeholder-img {
     transform: scale(1.03);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -151,7 +173,6 @@
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-
 .indicators-panel {
   .panel-header {
     display: flex;
@@ -161,11 +182,12 @@
 
     h3 {
       margin: 0;
+      font-size: 1rem;
     }
 
     span {
       font-size: 0.85rem;
-      color: #6b7280;
+      color: #9ca3af;
     }
   }
 }
@@ -179,39 +201,41 @@
 .indicator-card {
   padding: 0.75rem 0.9rem;
   border-radius: 0.75rem;
-  border: 1px solid #3a3a3a;
-  background-color: #818181;
-  color:#1b1b1b;
-  font-size: 1rem;
-  font-weight: bold;
+  border: 1px solid #374151;
+  background-color: #202020;
+  color: #f5f5f5;
+  font-size: 0.95rem;
 
   h3 {
     margin: 0 0 0.35rem;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    color: #e5e7eb;
   }
 
   .value {
     margin: 0 0 0.25rem;
     font-size: 1.05rem;
     font-weight: 600;
+    color: #f9fafb;
   }
 
   .meta {
     margin: 0;
     font-size: 0.8rem;
-    color: #3f3f3f;
+    color: #9ca3af;
   }
 }
 
 .error {
-  color: #b91c1c;
+  color: #fee2e2;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
-  background-color: #fee2e2;
+  background-color: #b91c1c;
   border: 1px solid #fecaca;
+  font-size: 0.9rem;
 }
 
 .muted {
   font-size: 0.9rem;
-  color: #6b7280;
+  color: #9ca3af;
 }

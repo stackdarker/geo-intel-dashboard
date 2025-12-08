@@ -1,0 +1,76 @@
+<section class="currency-widget">
+    <header class="currency-widget__header">
+      <div>
+        <h2>Currency Exchange</h2>
+        <p class="subtitle">
+          Latest conversion rates of a base currency.
+        </p>
+      </div>
+  
+      <div class="currency-widget__controls">
+        <label>
+          Base:
+          <select
+            #baseSelect
+            [value]="base()"
+            (change)="onBaseChange(baseSelect.value)"
+            >
+
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+          </select>
+        </label>
+  
+        <button
+          type="button"
+          class="refresh-btn"
+          (click)="loadRates()"
+          [disabled]="loading()"
+          title="Refresh latest rates"
+        >
+          ⟳
+        </button>
+      </div>
+    </header>
+  
+    <!-- States -->
+    <div *ngIf="loading()" class="state state--loading">
+      Loading FX snapshot…
+    </div>
+  
+    <div *ngIf="!loading() && error()" class="state state--error">
+      {{ error() }}
+    </div>
+  
+    <div
+      *ngIf="!loading() && !error() && data() as snapshot"
+      class="currency-widget__body"
+    >
+      <p class="as-of">
+        As of {{ snapshot.date | date : 'mediumDate' }} (Base:
+        {{ snapshot.base }})
+      </p>
+  
+      <table class="currency-widget__table">
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let code of majors">
+            <td class="code-cell">{{ code }}</td>
+            <td>
+              <ng-container [ngSwitch]="getRate(code)">
+                <span *ngSwitchCase="null">—</span>
+                <span *ngSwitchDefault>{{ getRate(code) }}</span>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  
