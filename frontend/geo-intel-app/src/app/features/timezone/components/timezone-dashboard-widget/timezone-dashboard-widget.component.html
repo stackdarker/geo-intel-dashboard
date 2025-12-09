@@ -1,0 +1,31 @@
+<article class="card worldclock-card">
+    <header class="widget-header">
+      <h2>World Clock</h2>
+      <a routerLink="/timezones" class="view-link">Edit →</a>
+    </header>
+  
+    <div *ngIf="loading()" class="widget-state">Loading…</div>
+    <div *ngIf="!loading() && error()" class="widget-state error">
+      {{ error() }}
+    </div>
+  
+    <div *ngIf="!loading() && !error() && worldClock().length > 0">
+      <div class="clock-row" *ngFor="let t of worldClock()">
+        <div class="clock-main">
+          <span class="city">{{ t.city }}</span>
+          <span class="region">{{ t.region }}</span>
+        </div>
+  
+        <div class="clock-time">
+          <span class="time">{{ t.localDateTime | date : 'shortTime' }}</span>
+          <span class="offset">{{ t.offset }} {{ t.abbreviation }}</span>
+          <span class="dst" *ngIf="t.dst">(DST)</span>
+        </div>
+      </div>
+    </div>
+  
+    <button class="refresh-btn" (click)="refresh()" [disabled]="loading()">
+      Refresh
+    </button>
+  </article>
+  
