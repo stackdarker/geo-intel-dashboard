@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { CountryInsights } from '../models/country-insights.model';
+import { GlobalInsightsOverview } from '../models/global-insights-overview.model';
 import { catchError } from 'rxjs/operators';
 import { of, tap } from 'rxjs';
 
@@ -10,15 +11,19 @@ import { of, tap } from 'rxjs';
 export class InsightsApiService {
   private http = inject(HttpClient);
 
+  private readonly fxBaseKey = 'geoDashboard.fxBaseCurrency';
+
   private readonly _countryInsights = signal<CountryInsights | null>(null);
+
+  private readonly _globalOverview = signal<GlobalInsightsOverview | null>(null);
+
   private readonly _loading = signal(false);
   private readonly _error = signal<string | null>(null);
 
   readonly countryInsights = computed(() => this._countryInsights());
+  readonly globalOverview = computed(() => this._globalOverview());
   readonly loading = computed(() => this._loading());
   readonly error = computed(() => this._error());
-
-  private readonly fxBaseKey = 'geoDashboard.fxBaseCurrency';
 
   loadCountryInsights(countryCode: string, timeZone?: string): void {
     if (!countryCode?.trim()) {
@@ -40,12 +45,44 @@ export class InsightsApiService {
       .get<CountryInsights>(`/insights/countries/${countryCode}`, { params })
       .pipe(
         tap((res) => {
-          this._countryInsights.set(res);
+          if (res) {
+            this._countryInsights.set(res);
+          }
         }),
         catchError((err) => {
           console.error('Failed to load country insights', err);
           this._error.set(
             err?.error?.message || 'Unable to load country insights.'
+          );
+          return of(null);
+        })
+      )
+      .subscribe({
+        complete: () => this._loading.set(false),
+      });
+  }
+
+  loadGlobalOverview(): void {
+    const baseCurrency = localStorage.getItem(this.fxBaseKey) || 'USD';
+
+    let params = new HttpParams().set('baseCurrency', baseCurrency);
+
+    this._loading.set(true);
+    this._error.set(null);
+    this._globalOverview.set(null);
+
+    this.http
+      .get<GlobalInsightsOverview>('/insights/global/overview', { params })
+      .pipe(
+        tap((res) => {
+          if (res) {
+            this._globalOverview.set(res);
+          }
+        }),
+        catchError((err) => {
+          console.error('Failed to load global insights overview', err);
+          this._error.set(
+            err?.error?.message || 'Unable to load global insights overview.'
           );
           return of(null);
         })

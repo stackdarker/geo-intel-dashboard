@@ -1,0 +1,77 @@
+<section class="insights-page">
+  <header class="insights-header">
+    <div>
+      <h1>Global Insights</h1>
+      <p class="subtitle">
+        Combined view of currencies and demographics across the globe.
+      </p>
+    </div>
+  </header>
+
+  <div *ngIf="loading()" class="state">Loading global insights…</div>
+  <div *ngIf="!loading() && error()" class="state state--error">
+    {{ error() }}
+  </div>
+
+  <div
+    *ngIf="!loading() && !error() && overview() as o"
+    class="insights-layout"
+  >
+    <!-- Card 1: Conversion rates vs base -->
+    <article class="card insights-card">
+      <h2>Conversion Rate with {{ o.baseCurrency }}</h2>
+      <p class="muted" *ngIf="!o.fxMajors || !o.fxMajors.rates">
+        No FX data available.
+      </p>
+      <table *ngIf="o.fxMajors.rates">
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of (o.fxMajors.rates | keyvalue)">
+            <td>{{ entry.key }}</td>
+            <td>{{ entry.value | number : '1.4-4' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="muted" *ngIf="o.fxMajors.date">
+        As of: {{ o.fxMajors.date }}
+      </p>
+    </article>
+
+    <!-- Card 2: Top 5 Most Populated Countries -->
+    <article class="card insights-card">
+      <h2>Top 5 Most Populated Countries</h2>
+      <p class="muted" *ngIf="topPopulation.length === 0">
+        No population data available.
+      </p>
+      <table *ngIf="topPopulation.length > 0">
+        <thead>
+          <tr>
+            <th>Country</th>
+            <th>Region</th>
+            <th class="numeric">Population</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of topPopulation">
+            <td>{{ c.name }} ({{ c.code }})</td>
+            <td>{{ c.region }}</td>
+            <td class="numeric">
+              {{ c.population | number : '1.0-0' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <!-- Card 3: Chart -->
+    <article class="card insights-card">
+      <h2>Population Chart</h2>
+      <app-global-population-chart [data]="topPopulation"></app-global-population-chart>
+    </article>
+  </div>
+</section>

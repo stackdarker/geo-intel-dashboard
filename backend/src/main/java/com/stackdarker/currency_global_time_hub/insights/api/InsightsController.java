@@ -4,6 +4,8 @@ import com.stackdarker.currency_global_time_hub.insights.model.CountryInsights;
 import com.stackdarker.currency_global_time_hub.insights.service.InsightsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.stackdarker.currency_global_time_hub.insights.model.GlobalInsightsOverview;
+
 
 @RestController
 @RequestMapping("/api/v1/insights")
@@ -25,4 +27,14 @@ public class InsightsController {
                 insightsService.getCountryInsights(countryCode, baseCurrency, timeZone);
         return ResponseEntity.ok(insights);
     }
+
+    @GetMapping("/global/overview")
+    public ResponseEntity<GlobalInsightsOverview> getGlobalOverview(
+        @RequestParam(name = "baseCurrency", required = false, defaultValue = "USD")
+        String baseCurrency
+    ) {
+    GlobalInsightsOverview overview = insightsService.getGlobalOverview(baseCurrency);
+    return ResponseEntity.ok(overview);
+    }
+
 }

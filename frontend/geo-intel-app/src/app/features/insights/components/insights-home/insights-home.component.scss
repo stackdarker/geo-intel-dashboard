@@ -1,0 +1,74 @@
+.insights-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.insights-header {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.subtitle {
+  margin-top: 0.25rem;
+  color: #d0d0d0;
+  font-size: 0.95rem;
+}
+
+.state {
+  max-width: 1100px;
+  margin: 0 auto;
+  font-size: 0.9rem;
+  color: #d0d0d0;
+}
+
+.state--error {
+  color: #ffb3b3;
+}
+
+.insights-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.card.insights-card {
+  background: #333;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  color: #f5f5f5;
+}
+
+.card.insights-card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.muted {
+  color: #c0c0c0;
+  font-size: 0.9rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+th,
+td {
+  padding: 0.25rem 0.3rem;
+}
+
+th {
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+td.numeric,
+th.numeric {
+  text-align: right;
+}

@@ -8,10 +8,15 @@ import com.stackdarker.currency_global_time_hub.currency.service.CurrencyService
 import com.stackdarker.currency_global_time_hub.insights.model.CountryInsights;
 import com.stackdarker.currency_global_time_hub.time.model.TimeNowResponse;
 import com.stackdarker.currency_global_time_hub.time.service.TimeService;
-import com.stackdarker.currency_global_time_hub.weather.model.CurrentWeather;
 import com.stackdarker.currency_global_time_hub.weather.model.WeatherSummary;
 import com.stackdarker.currency_global_time_hub.weather.service.WeatherService;
 import org.springframework.stereotype.Service;
+import com.stackdarker.currency_global_time_hub.insights.model.GlobalInsightsOverview;
+import com.stackdarker.currency_global_time_hub.insights.model.PopulationInsight;
+
+import java.time.Instant;
+import java.util.Comparator;
+
 
 import java.util.List;
 import java.util.Locale;
@@ -71,4 +76,42 @@ public class InsightsServiceImpl implements InsightsService {
 
         return new CountryInsights(country, indicators, rates, weather, localTime);
     }
+
+    @Override
+public GlobalInsightsOverview getGlobalOverview(String baseCurrency) {
+    String base = (baseCurrency == null || baseCurrency.isBlank())
+            ? "USD"
+            : baseCurrency.toUpperCase(Locale.ROOT);
+
+    var allCountries = countryService.getAllCountries(); 
+
+    var topPopulation = allCountries.stream()
+            .sorted(Comparator.comparingLong(
+                    c -> -c.getPopulation()  
+            ))
+            .limit(5)
+            .map(c -> new PopulationInsight(
+                    c.getCode(),
+                    c.getName(),
+                    c.getRegion(),
+                    c.getPopulation()
+            ))
+            .toList();
+
+    var majors = List.of("EUR", "GBP", "JPY", "CHF", "AUD", "CAD");
+    var targets = majors.stream()
+            .map(m -> m.toUpperCase(Locale.ROOT))
+            .filter(m -> !m.equals(base))
+            .toList();
+
+    var fxMajors = currencyService.getLatestRates(base, targets);
+
+    return new GlobalInsightsOverview(
+            base,
+            fxMajors,
+            topPopulation,
+            Instant.now()
+    );
+}
+
 }

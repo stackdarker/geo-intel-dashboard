@@ -47,6 +47,12 @@ export const routes: Routes = [
         import('./features/timezone/components/timezone-list.component')
           .then(m => m.TimezoneListComponent),
     },    
+    {
+      path: 'insights',
+      loadComponent: () =>
+        import('./features/insights/components/insights-home/insights-home.component')
+          .then(m => m.InsightsHomeComponent),
+    },
     { path: '**', redirectTo: 'dashboard' },
     // placeholders for future features
     // { path: 'insights', component: InsightsViewComponent },

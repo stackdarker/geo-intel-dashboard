@@ -1,6 +1,7 @@
 package com.stackdarker.currency_global_time_hub.insights.service;
 
 import com.stackdarker.currency_global_time_hub.insights.model.CountryInsights;
+import com.stackdarker.currency_global_time_hub.insights.model.GlobalInsightsOverview;
 
 public interface InsightsService {
 
@@ -12,4 +13,6 @@ public interface InsightsService {
     CountryInsights getCountryInsights(String countryCode,
                                        String baseCurrency,
                                        String timeZone);
+
+    GlobalInsightsOverview getGlobalOverview(String baseCurrency);
 }
