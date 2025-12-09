@@ -10,6 +10,8 @@ interface CountryOption {
   name: string;
 }
 
+type TempUnit = 'C' | 'F';
+
 @Component({
   standalone: true,
   selector: 'app-weather-lookup',
@@ -35,10 +37,40 @@ export class WeatherLookupComponent implements OnInit {
 
   private readonly lastCityKey = 'geoDashboard.weather.lastCity';
   private readonly lastCountryKey = 'geoDashboard.weather.lastCountryCode';
+  private readonly tempUnitKey = 'geoDashboard.weather.tempUnit';
+
+  tempUnit: TempUnit = this.loadInitialUnit();
+
 
   ngOnInit(): void {
     this.loadCountries();
     this.restoreLastSearch();
+  }
+
+  private loadInitialUnit(): TempUnit {
+    const stored = localStorage.getItem(this.tempUnitKey);
+    return stored === 'F' ? 'F' : 'C';
+  }
+
+  setTempUnit(unit: TempUnit): void {
+    this.tempUnit = unit;
+    localStorage.setItem(this.tempUnitKey, unit);
+  }
+
+  convertTemp(temp: number | null | undefined): number | null {
+    if (temp === null || temp === undefined) {
+      return null;
+    }
+    if (this.tempUnit === 'C') {
+      return temp;
+    }
+    const c = temp;
+    const f = (c * 9) / 5 + 32;
+    return f;
+  }
+
+  getTempUnitLabel(): string {
+    return this.tempUnit === 'C' ? '°C' : '°F';
   }
 
   private loadCountries(): void {

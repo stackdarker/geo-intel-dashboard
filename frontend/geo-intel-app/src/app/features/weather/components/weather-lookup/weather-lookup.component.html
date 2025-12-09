@@ -45,6 +45,24 @@
             {{ countriesError() }}
           </span>
         </div>
+
+        <div class="unit-toggle">
+          <button
+            type="button"
+            [class.active]="tempUnit === 'C'"
+            (click)="setTempUnit('C')"
+          >
+            °C
+          </button>
+          <button
+            type="button"
+            [class.active]="tempUnit === 'F'"
+            (click)="setTempUnit('F')"
+          >
+            °F
+          </button>
+        </div>
+        
       </form>
     </header>
   
@@ -66,11 +84,13 @@
             <span *ngIf="c.country">({{ c.country }})</span>
           </p>
           <p class="temp-line" *ngIf="c.temperature !== null">
-            {{ c.temperature }}°C
+            {{ convertTemp(c.temperature) | number : '1.0-1' }}{{ getTempUnitLabel() }}
             <span *ngIf="c.feelsLike !== null" class="muted">
-              · feels like {{ c.feelsLike }}°C
+              · feels like
+              {{ convertTemp(c.feelsLike) | number : '1.0-1' }}{{ getTempUnitLabel() }}
             </span>
           </p>
+          
           <p class="muted" *ngIf="c.description">
             {{ c.description | titlecase }}
           </p>
@@ -99,7 +119,7 @@
               {{ p.timestamp | date : 'shortTime' }}
             </span>
             <span class="temp" *ngIf="p.temperature !== null">
-              {{ p.temperature }}°C
+              {{ convertTemp(p.temperature) | number : '1.0-1' }}{{ getTempUnitLabel() }}
             </span>
             <span class="desc" *ngIf="p.description">
               {{ p.description | titlecase }}
