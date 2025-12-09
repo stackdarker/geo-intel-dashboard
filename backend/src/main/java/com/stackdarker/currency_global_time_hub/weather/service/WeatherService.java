@@ -1,9 +1,14 @@
 package com.stackdarker.currency_global_time_hub.weather.service;
 
-import com.stackdarker.currency_global_time_hub.weather.model.CurrentWeather;
+import com.stackdarker.currency_global_time_hub.weather.model.WeatherForecastResponse;
+import com.stackdarker.currency_global_time_hub.weather.model.WeatherSummary;
 
-// service interface for weather-related operations
 public interface WeatherService {
 
-    CurrentWeather getCurrentWeather(double lat, double lon);
+    WeatherSummary getCurrentWeatherByCity(String city);
+    WeatherSummary getCurrentWeatherByCity(String city, String countryCode);
+
+    WeatherForecastResponse getForecastByCity(String city, int hours);
+    WeatherForecastResponse getForecastByCity(String city, String countryCode, int hours);
+
 }

@@ -23,6 +23,7 @@ public class CacheConfig {
                 "countryProfile",
                 "countryIndicators",
                 "currentWeather",
+                "weatherForecast",
                 "countryAll",
                 "historicalRates"
         );

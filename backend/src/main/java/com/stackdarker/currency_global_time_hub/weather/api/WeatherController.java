@@ -1,15 +1,11 @@
 package com.stackdarker.currency_global_time_hub.weather.api;
 
-import com.stackdarker.currency_global_time_hub.weather.model.CurrentWeather;
+import com.stackdarker.currency_global_time_hub.weather.model.WeatherForecastResponse;
+import com.stackdarker.currency_global_time_hub.weather.model.WeatherSummary;
 import com.stackdarker.currency_global_time_hub.weather.service.WeatherService;
-
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Validated
 @RestController
 @RequestMapping("/api/v1/weather")
 public class WeatherController {
@@ -21,10 +17,35 @@ public class WeatherController {
     }
 
     @GetMapping("/current")
-    public CurrentWeather getCurrentWeather(
-        @RequestParam @DecimalMin("-90") @DecimalMax("90") double lat,
-        @RequestParam @DecimalMin("-180") @DecimalMax("180") double lon
+    public ResponseEntity<WeatherSummary> getCurrent(
+            @RequestParam("city") String city,
+            @RequestParam(name = "countryCode", required = false) String countryCode
     ) {
-        return weatherService.getCurrentWeather(lat, lon);
+        WeatherSummary summary;
+
+        if (countryCode == null || countryCode.isBlank()) {
+            summary = weatherService.getCurrentWeatherByCity(city);
+        } else {
+            summary = weatherService.getCurrentWeatherByCity(city, countryCode);
+        }
+
+        return ResponseEntity.ok(summary);
+    }
+
+    @GetMapping("/forecast")
+    public ResponseEntity<WeatherForecastResponse> getForecast(
+            @RequestParam("city") String city,
+            @RequestParam(name = "hours", required = false, defaultValue = "24") int hours,
+            @RequestParam(name = "countryCode", required = false) String countryCode
+    ) {
+        WeatherForecastResponse forecast;
+
+        if (countryCode == null || countryCode.isBlank()) {
+            forecast = weatherService.getForecastByCity(city, hours);
+        } else {
+            forecast = weatherService.getForecastByCity(city, countryCode, hours);
+        }
+
+        return ResponseEntity.ok(forecast);
     }
 }

@@ -6,7 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class WeatherApiProperties {
 
     private String baseUrl;
-    private String apiKey; // might be optional?
+    private String geocodingUrl;
+// optional
+    private String apiKey;
 
     public String getBaseUrl() {
         return baseUrl;
@@ -14,6 +16,14 @@ public class WeatherApiProperties {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    public String getGeocodingUrl() {
+        return geocodingUrl;
+    }
+
+    public void setGeocodingUrl(String geocodingUrl) {
+        this.geocodingUrl = geocodingUrl;
     }
 
     public String getApiKey() {

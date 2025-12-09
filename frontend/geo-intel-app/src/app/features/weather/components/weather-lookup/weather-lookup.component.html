@@ -1,0 +1,116 @@
+<section class="weather-page">
+    <header class="weather-header">
+      <div class="header-text">
+        <h1>Weather</h1>
+        <p class="subtitle">
+          Look up current conditions and forecast by city.
+        </p>
+      </div>
+  
+      <form
+        class="weather-search"
+        (ngSubmit)="onSearch()"
+        novalidate
+      >
+        <div class="search-row">
+          <input
+            type="search"
+            placeholder="Enter city name…"
+            [(ngModel)]="cityModel"
+            name="city"
+          />
+  
+          <select
+            [(ngModel)]="countryCodeModel"
+            name="countryCode"
+            [disabled]="countriesLoading()"
+          >
+            <option value="">Any country</option>
+            <option *ngFor="let c of countries()" [value]="c.code">
+              {{ c.name }} ({{ c.code }})
+            </option>
+          </select>
+  
+          <button type="submit" [disabled]="loading() || !cityModel.trim()">
+            <span *ngIf="!loading()">Search</span>
+            <span *ngIf="loading()">Loading…</span>
+          </button>
+        </div>
+  
+        <div class="hint-row">
+          <span class="hint">
+            Tip: choose a country to disambiguate the city. If correct result does not populate, city is unavailable. 
+          </span>
+          <span class="hint error" *ngIf="countriesError()">
+            {{ countriesError() }}
+          </span>
+        </div>
+      </form>
+    </header>
+  
+    <div *ngIf="error()" class="state state--error">
+      {{ error() }}
+    </div>
+  
+    <div *ngIf="!error() && !loading() && !current()" class="state state--empty">
+      Enter a city to see weather details.
+    </div>
+  
+
+    <div *ngIf="current() as c" class="weather-layout">
+      <article class="card weather-card">
+        <h2>Current conditions</h2>
+        <div class="card-body">
+          <p class="headline">
+            {{ c.city }}
+            <span *ngIf="c.country">({{ c.country }})</span>
+          </p>
+          <p class="temp-line" *ngIf="c.temperature !== null">
+            {{ c.temperature }}°C
+            <span *ngIf="c.feelsLike !== null" class="muted">
+              · feels like {{ c.feelsLike }}°C
+            </span>
+          </p>
+          <p class="muted" *ngIf="c.description">
+            {{ c.description | titlecase }}
+          </p>
+          <p class="meta-line">
+            <span *ngIf="c.humidity !== null">
+              Humidity: {{ c.humidity }}%
+            </span>
+            <span *ngIf="c.windSpeed !== null">
+              · Wind: {{ c.windSpeed }} m/s
+            </span>
+          </p>
+          <p class="muted">
+            Updated: {{ c.timestamp | date : 'medium' }}
+          </p>
+        </div>
+      </article>
+  
+      <article class="card weather-card" *ngIf="forecast() as f">
+        <h2>Next 24 hours</h2>
+        <div
+          class="card-body forecast-list"
+          *ngIf="f.points.length > 0; else noForecast"
+        >
+          <div *ngFor="let p of f.points | slice: 0 : 8" class="forecast-row">
+            <span class="time">
+              {{ p.timestamp | date : 'shortTime' }}
+            </span>
+            <span class="temp" *ngIf="p.temperature !== null">
+              {{ p.temperature }}°C
+            </span>
+            <span class="desc" *ngIf="p.description">
+              {{ p.description | titlecase }}
+            </span>
+          </div>
+        </div>
+  
+        <ng-template #noForecast>
+          <p class="muted">No forecast data available.</p>
+        </ng-template>
+      </article>
+    </div>
+  </section>
+  

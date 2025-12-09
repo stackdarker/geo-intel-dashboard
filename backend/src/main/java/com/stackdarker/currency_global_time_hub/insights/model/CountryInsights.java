@@ -4,15 +4,14 @@ import com.stackdarker.currency_global_time_hub.country.model.CountryIndicators;
 import com.stackdarker.currency_global_time_hub.country.model.CountryProfile;
 import com.stackdarker.currency_global_time_hub.currency.model.RatesResponse;
 import com.stackdarker.currency_global_time_hub.time.model.TimeNowResponse;
-import com.stackdarker.currency_global_time_hub.weather.model.CurrentWeather;
+import com.stackdarker.currency_global_time_hub.weather.model.WeatherSummary;
 
-// model class combining various insights about a country
 public class CountryInsights {
 
     private CountryProfile country;
     private CountryIndicators indicators;
     private RatesResponse currencyRates;
-    private CurrentWeather weather;
+    private WeatherSummary weather;     
     private TimeNowResponse localTime;
 
     public CountryInsights() {
@@ -21,7 +20,7 @@ public class CountryInsights {
     public CountryInsights(CountryProfile country,
                            CountryIndicators indicators,
                            RatesResponse currencyRates,
-                           CurrentWeather weather,
+                           WeatherSummary weather,    
                            TimeNowResponse localTime) {
         this.country = country;
         this.indicators = indicators;
@@ -54,11 +53,11 @@ public class CountryInsights {
         this.currencyRates = currencyRates;
     }
 
-    public CurrentWeather getWeather() {
+    public WeatherSummary getWeather() {         
         return weather;
     }
 
-    public void setWeather(CurrentWeather weather) {
+    public void setWeather(WeatherSummary weather) { 
         this.weather = weather;
     }
 

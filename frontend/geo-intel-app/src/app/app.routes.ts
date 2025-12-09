@@ -4,7 +4,6 @@ import { CountryListComponent } from './features/country/components/country-list
 
 
 // Define application routes
-// Future routes for additional features are commented out for now
 export const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
     { path: 'dashboard', component: DashboardHomeComponent },
@@ -36,9 +35,14 @@ export const routes: Routes = [
           './features/currencies/components/currency-detail/currency-detail.component'
         ).then((m) => m.CurrencyDetailComponent),
     },
+    {
+      path: 'weather',
+      loadComponent: () =>
+        import('./features/weather/components/weather-lookup/weather-lookup.component')
+          .then(m => m.WeatherLookupComponent),
+    },
     { path: '**', redirectTo: 'dashboard' },
     // placeholders for future features
-    // { path: 'weather', component: WeatherViewComponent },
     // { path: 'timezones', component: TimezoneViewComponent },
     // { path: 'insights', component: InsightsViewComponent },
   ];
