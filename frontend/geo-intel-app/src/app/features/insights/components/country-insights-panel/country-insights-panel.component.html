@@ -1,0 +1,86 @@
+<article class="card insights-card">
+    <h2>Country Insights</h2>
+  
+    <div *ngIf="loading()" class="state">Loading insights…</div>
+    <div *ngIf="!loading() && error()" class="state state--error">
+      {{ error() }}
+    </div>
+  
+    <ng-container *ngIf="!loading() && !error() && insights() as i">
+      <div class="insights-grid">
+        <!-- Economy -->
+        <div class="insight">
+          <h3>Economy</h3>
+  
+          <!-- GDP -->
+          <p *ngIf="i.indicators.gdp && i.indicators.gdp.value != null">
+            GDP:
+            {{ i.indicators.gdp.value | number : '1.0-0' }} USD
+          </p>
+          <p
+            *ngIf="!i.indicators.gdp || i.indicators.gdp.value == null"
+            class="muted"
+          >
+            GDP data unavailable.
+          </p>
+  
+          <!-- Population -->
+          <p
+            *ngIf="
+              i.indicators.population &&
+              i.indicators.population.value != null
+            "
+          >
+            Population:
+            {{ i.indicators.population.value | number }}
+          </p>
+  
+          <!-- Life expectancy -->
+          <p
+            *ngIf="
+              i.indicators.lifeExpectancy &&
+              i.indicators.lifeExpectancy.value != null
+            "
+          >
+            Life expectancy:
+            {{
+              i.indicators.lifeExpectancy.value
+                | number : '1.0-1'
+            }}
+            years
+          </p>
+        </div>
+  
+        <!-- FX Snapshot -->
+        <div class="insight">
+          <h3>FX Snapshot</h3>
+          <p class="muted" *ngIf="!i.currencyRates.rates">
+            No FX data available.
+          </p>
+          <ul *ngIf="i.currencyRates.rates">
+            <li *ngFor="let entry of (i.currencyRates.rates | keyvalue)">
+              1 {{ i.currencyRates.base }} = {{ entry.value }} {{ entry.key }}
+            </li>
+          </ul>
+        </div>
+  
+        <!-- Local conditions -->
+        <div class="insight">
+          <h3>Local conditions</h3>
+          <p *ngIf="i.weather">
+            {{ i.weather.temperature }}°C,
+            {{ i.weather.description | titlecase }}
+          </p>
+          <p *ngIf="!i.weather" class="muted">
+            Weather data unavailable.
+          </p>
+          <p *ngIf="i.localTime">
+            Local time:
+            {{ i.localTime.localDateTime | date : 'medium' }}
+            ({{ i.localTime.offset }} {{ i.localTime.abbreviation }})
+          </p>
+        </div>
+      </div>
+    </ng-container>
+  </article>
+  

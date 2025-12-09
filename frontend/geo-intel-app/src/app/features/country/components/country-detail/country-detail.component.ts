@@ -4,17 +4,20 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CountryService } from '../../services/country.service';
 import { Country } from '../../models/country.model';
 import { CountryIndicators } from '../../models/country-indicators.model';
+import { CountryInsightsPanelComponent } from '../../../insights/components/country-insights-panel/country-insights-panel.component';
 
 @Component({
   selector: 'app-country-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, CountryInsightsPanelComponent],
   templateUrl: './country-detail.component.html',
   styleUrls: ['./country-detail.component.scss'],
 })
 export class CountryDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly countryService = inject(CountryService);
+
+  countryCode = this.route.snapshot.paramMap.get('code')!;
 
   readonly isLoading = signal(true);
   readonly error = signal<string | null>(null);

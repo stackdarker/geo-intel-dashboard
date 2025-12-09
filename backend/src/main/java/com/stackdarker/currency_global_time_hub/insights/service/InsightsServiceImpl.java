@@ -8,6 +8,7 @@ import com.stackdarker.currency_global_time_hub.currency.service.CurrencyService
 import com.stackdarker.currency_global_time_hub.insights.model.CountryInsights;
 import com.stackdarker.currency_global_time_hub.time.model.TimeNowResponse;
 import com.stackdarker.currency_global_time_hub.time.service.TimeService;
+import com.stackdarker.currency_global_time_hub.weather.model.CurrentWeather;
 import com.stackdarker.currency_global_time_hub.weather.model.WeatherSummary;
 import com.stackdarker.currency_global_time_hub.weather.service.WeatherService;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,9 @@ public class InsightsServiceImpl implements InsightsService {
                                               String timeZone) {
 
         String code = countryCode.toUpperCase(Locale.ROOT);
-        String base = baseCurrency.toUpperCase(Locale.ROOT);
+        String base = (baseCurrency == null || baseCurrency.isBlank())
+                ? "USD"
+                : baseCurrency.toUpperCase(Locale.ROOT);
 
         CountryProfile country = countryService.getProfile(code);
         CountryIndicators indicators = countryService.getIndicators(code);
@@ -55,13 +58,16 @@ public class InsightsServiceImpl implements InsightsService {
 
         RatesResponse rates = currencyService.getLatestRates(base, targetCurrencies);
 
-        String capitalCity = country.getCapital();
         WeatherSummary weather = null;
-        if (capitalCity != null && !capitalCity.isBlank()) {
-            weather = weatherService.getCurrentWeatherByCity(capitalCity);
+        if (country.getLatitude() != null && country.getLongitude() != null) {
+            weather = weatherService.getCurrentWeatherByCity(country.getCapital());
         }
 
-        TimeNowResponse localTime = timeService.getNow(timeZone);
+        String tz = (timeZone == null || timeZone.isBlank())
+                ? "UTC"
+                : timeZone;
+
+        TimeNowResponse localTime = timeService.getNow(tz);
 
         return new CountryInsights(country, indicators, rates, weather, localTime);
     }

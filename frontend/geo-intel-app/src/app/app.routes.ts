@@ -49,7 +49,6 @@ export const routes: Routes = [
     },    
     { path: '**', redirectTo: 'dashboard' },
     // placeholders for future features
-    // { path: 'timezones', component: TimezoneViewComponent },
     // { path: 'insights', component: InsightsViewComponent },
   ];
   
