@@ -1,17 +1,16 @@
 package com.stackdarker.currency_global_time_hub.time.service;
 
-import com.stackdarker.currency_global_time_hub.time.model.TimeConversionResult;
 import com.stackdarker.currency_global_time_hub.time.model.TimeNowResponse;
+import com.stackdarker.currency_global_time_hub.time.model.TimeZoneInfo;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
-// Service interface for time-related stuff
 public interface TimeService {
 
-    TimeNowResponse getNow(String zone);
+   
+    TimeNowResponse getNow(String zoneId);
+    
+    List<TimeZoneInfo> getAllZones();
 
-    TimeConversionResult convert(String fromZone, String toZone, ZonedDateTime dateTime);
-
-    List<String> listZones(); // for dropdowns / UI
+    List<TimeNowResponse> getWorldClock(List<String> zoneIds);
 }

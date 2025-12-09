@@ -25,7 +25,17 @@ public class CacheConfig {
                 "currentWeather",
                 "weatherForecast",
                 "countryAll",
-                "historicalRates"
+                "historicalRates",
+                "timeNow",
+                "timeZones",
+                "worldClock",
+                "exchangeRateSearch",
+                "currencyHistoricalRates",
+                "currencyExchangeRateSearch",
+                "allCurrencies",
+                "countryByCurrency",
+                "countriesByCurrency",
+                "indicatorSearch"
         );
 
         cacheManager.setCaffeine(

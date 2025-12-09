@@ -41,6 +41,12 @@ export const routes: Routes = [
         import('./features/weather/components/weather-lookup/weather-lookup.component')
           .then(m => m.WeatherLookupComponent),
     },
+    {
+      path: 'timezones',
+      loadComponent: () =>
+        import('./features/timezone/components/timezone-list.component')
+          .then(m => m.TimezoneListComponent),
+    },    
     { path: '**', redirectTo: 'dashboard' },
     // placeholders for future features
     // { path: 'timezones', component: TimezoneViewComponent },

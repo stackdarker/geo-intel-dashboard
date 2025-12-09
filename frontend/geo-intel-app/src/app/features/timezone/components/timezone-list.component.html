@@ -1,0 +1,86 @@
+<section class="timezone-page">
+    <header class="timezone-header">
+      <div>
+        <h1>Timezones</h1>
+        <p class="subtitle">
+          Build your world clock by selecting some time zones.
+        </p>
+      </div>
+  
+      <div class="zones-filter">
+        <input
+          type="search"
+          placeholder="Search zone (e.g. New York, Europe)..."
+          [ngModel]="filterText()"
+          (ngModelChange)="onFilterChange($event)"
+        />
+      </div>
+    </header>
+  
+    <div *ngIf="error()" class="state state--error">
+      {{ error() }}
+    </div>
+  
+    <div class="timezone-layout">
+      <article class="card zones-card">
+        <h2>Available Zones</h2>
+        <div class="card-body">
+          <p class="muted" *ngIf="loading()">Loading zones…</p>
+  
+          <div class="zones-list" *ngIf="!loading()">
+            <button
+              type="button"
+              class="zone-item"
+              *ngFor="let z of filteredZones()"
+              (click)="toggleFavorite(z.zoneId)"
+              [class.zone-item--selected]="isFavorite(z.zoneId)"
+            >
+              <span class="zone-name">{{ displayZoneLabel(z) }}</span>
+              <span class="zone-id">{{ z.zoneId }}</span>
+            </button>
+          </div>
+        </div>
+      </article>
+  
+      <article class="card clock-card">
+        <h2>World Clock</h2>
+        <div class="card-body">
+          <p class="muted" *ngIf="favorites().length === 0">
+            No favorites selected. Click a zone on the left to add it.
+          </p>
+  
+          <button
+            type="button"
+            class="refresh-btn"
+            (click)="refreshWorldClock()"
+            [disabled]="loading()"
+          >
+            Refresh
+          </button>
+  
+          <div class="clock-list">
+            <div class="clock-row" *ngFor="let t of worldClock()">
+              <div class="clock-main">
+                <span class="clock-city">
+                  {{ t.city || t.zoneId }}
+                </span>
+                <span class="clock-region">
+                  {{ t.region }}
+                </span>
+              </div>
+              <div class="clock-time">
+                <span class="time">
+                  {{ t.localDateTime | date : 'shortTime' }}
+                </span>
+                <span class="offset">
+                  {{ t.offset }} {{ t.abbreviation }}
+                  <span *ngIf="t.dst"> (DST)</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  
