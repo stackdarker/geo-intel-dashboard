@@ -4,6 +4,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { WeatherApiService } from '../../services/weather-api.service';
+import { WeatherForecastChartComponent } from '../weather-forecast-chart/weather-forecast-chart.component';
 
 interface CountryOption {
   code: string;
@@ -15,7 +16,7 @@ type TempUnit = 'C' | 'F';
 @Component({
   standalone: true,
   selector: 'app-weather-lookup',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, WeatherForecastChartComponent],
   templateUrl: './weather-lookup.component.html',
   styleUrls: ['./weather-lookup.component.scss'],
 })

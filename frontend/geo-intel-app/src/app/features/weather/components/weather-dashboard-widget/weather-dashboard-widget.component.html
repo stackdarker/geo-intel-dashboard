@@ -1,0 +1,45 @@
+<article class="card weather-widget">
+    <header class="widget-header">
+      <h2>Weather Snapshot</h2>
+      <a routerLink="/weather" class="view-link">View details →</a>
+    </header>
+  
+    <div *ngIf="loading()" class="widget-state">
+      Loading weather…
+    </div>
+  
+    <div *ngIf="!loading() && error()" class="widget-state widget-state--error">
+      {{ error() }}
+    </div>
+  
+    <div *ngIf="!loading() && !error() && summary() as s" class="widget-body">
+      <div class="location">
+        <span class="city">{{ s.city }}</span>
+        <span class="country" *ngIf="s.country">({{ s.country }})</span>
+      </div>
+  
+      <div class="temp-line" *ngIf="s.temperature !== null">
+        <span class="temp">
+          {{ convertTemp(s.temperature) | number : '1.0-1' }}{{ getTempUnitLabel() }}
+        </span>
+        <span class="feels" *ngIf="s.feelsLike !== null">
+          feels like
+          {{ convertTemp(s.feelsLike) | number : '1.0-1' }}{{ getTempUnitLabel() }}
+        </span>
+      </div>
+  
+      <div class="description" *ngIf="s.description">
+        {{ s.description | titlecase }}
+      </div>
+  
+      <div class="meta">
+        <span *ngIf="s.humidity !== null">
+          Humidity: {{ s.humidity }}%
+        </span>
+        <span *ngIf="s.windSpeed !== null">
+          · Wind: {{ s.windSpeed }} m/s
+        </span>
+      </div>
+    </div>
+  </article>
+  

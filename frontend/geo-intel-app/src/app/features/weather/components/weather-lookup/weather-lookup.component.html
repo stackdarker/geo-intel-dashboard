@@ -90,7 +90,6 @@
               {{ convertTemp(c.feelsLike) | number : '1.0-1' }}{{ getTempUnitLabel() }}
             </span>
           </p>
-          
           <p class="muted" *ngIf="c.description">
             {{ c.description | titlecase }}
           </p>
@@ -107,30 +106,47 @@
           </p>
         </div>
       </article>
-  
-      <article class="card weather-card" *ngIf="forecast() as f">
-        <h2>Next 24 hours</h2>
-        <div
-          class="card-body forecast-list"
-          *ngIf="f.points.length > 0; else noForecast"
-        >
-          <div *ngFor="let p of f.points | slice: 0 : 8" class="forecast-row">
-            <span class="time">
-              {{ p.timestamp | date : 'shortTime' }}
-            </span>
-            <span class="temp" *ngIf="p.temperature !== null">
-              {{ convertTemp(p.temperature) | number : '1.0-1' }}{{ getTempUnitLabel() }}
-            </span>
-            <span class="desc" *ngIf="p.description">
-              {{ p.description | titlecase }}
-            </span>
+    
+      <ng-container *ngIf="forecast() as f">
+        <article class="card weather-card">
+          <h2>Next 24 hours</h2>
+          <div
+            class="card-body forecast-list"
+            *ngIf="f.points.length > 0; else noForecast"
+          >
+            <div *ngFor="let p of f.points | slice: 0 : 8" class="forecast-row">
+              <span class="time">
+                {{ p.timestamp | date : 'shortTime' }}
+              </span>
+              <span class="temp" *ngIf="p.temperature !== null">
+                {{ convertTemp(p.temperature) | number : '1.0-1' }}{{ getTempUnitLabel() }}
+              </span>
+              <span class="desc" *ngIf="p.description">
+                {{ p.description | titlecase }}
+              </span>
+            </div>
           </div>
-        </div>
+    
+          <ng-template #noForecast>
+            <p class="muted">No forecast data available.</p>
+          </ng-template>
+        </article>
+    
+        <article class="card weather-card">
+          <h2>Temperature Trend</h2>
+          <div class="card-body">
+            <app-weather-forecast-chart
+              [forecast]="f"
+              [unit]="tempUnit"
+            ></app-weather-forecast-chart>
+          </div>
+        </article>
+      </ng-container>
+    </div>
+    
   
         <ng-template #noForecast>
           <p class="muted">No forecast data available.</p>
         </ng-template>
-      </article>
-    </div>
   </section>
   
