@@ -4,6 +4,8 @@ import { CountryInsights } from '../models/country-insights.model';
 import { GlobalInsightsOverview } from '../models/global-insights-overview.model';
 import { catchError } from 'rxjs/operators';
 import { of, tap } from 'rxjs';
+import { WatchlistInsightsResponse } from '../models/watchlist-insights-response.model';
+
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +18,10 @@ export class InsightsApiService {
   private readonly _countryInsights = signal<CountryInsights | null>(null);
 
   private readonly _globalOverview = signal<GlobalInsightsOverview | null>(null);
+
+  private readonly _watchlistInsights = signal<WatchlistInsightsResponse | null>(null);
+
+  readonly watchlistInsights = computed(() => this._watchlistInsights());
 
   private readonly _loading = signal(false);
   private readonly _error = signal<string | null>(null);
@@ -91,4 +97,50 @@ export class InsightsApiService {
         complete: () => this._loading.set(false),
       });
   }
+
+  loadWatchlistInsights(codes: string[]): void {
+    const cleaned = codes
+      .map(c => c.trim())
+      .filter(c => !!c);
+  
+    if (cleaned.length === 0) {
+      this._watchlistInsights.set({
+        baseCurrency: localStorage.getItem(this.fxBaseKey) || 'USD',
+        items: [],
+        generatedAt: new Date().toISOString(),
+      });
+      return;
+    }
+  
+    const baseCurrency = localStorage.getItem(this.fxBaseKey) || 'USD';
+  
+    let params = new HttpParams().set('baseCurrency', baseCurrency);
+    cleaned.forEach(code => {
+      params = params.append('codes', code);
+    });
+  
+    this._loading.set(true);
+    this._error.set(null);
+  
+    this.http
+      .get<WatchlistInsightsResponse>('/insights/watchlist', { params })
+      .pipe(
+        tap(res => {
+          if (res) {
+            this._watchlistInsights.set(res);
+          }
+        }),
+        catchError(err => {
+          console.error('Failed to load watchlist insights', err);
+          this._error.set(
+            err?.error?.message || 'Unable to load watchlist insights.'
+          );
+          return of(null);
+        })
+      )
+      .subscribe({
+        complete: () => this._loading.set(false),
+      });
+  }
+  
 }

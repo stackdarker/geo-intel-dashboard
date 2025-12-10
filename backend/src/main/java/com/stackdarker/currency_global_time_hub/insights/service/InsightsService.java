@@ -2,6 +2,9 @@ package com.stackdarker.currency_global_time_hub.insights.service;
 
 import com.stackdarker.currency_global_time_hub.insights.model.CountryInsights;
 import com.stackdarker.currency_global_time_hub.insights.model.GlobalInsightsOverview;
+import com.stackdarker.currency_global_time_hub.insights.model.WatchlistInsightsResponse;
+
+import java.util.List;
 
 public interface InsightsService {
 
@@ -15,4 +18,7 @@ public interface InsightsService {
                                        String timeZone);
 
     GlobalInsightsOverview getGlobalOverview(String baseCurrency);
+
+    WatchlistInsightsResponse getWatchlistInsights(List<String> countryCodes,
+        String baseCurrency);
 }

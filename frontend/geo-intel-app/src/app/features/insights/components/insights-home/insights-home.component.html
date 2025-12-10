@@ -73,5 +73,80 @@
       <h2>Population Chart</h2>
       <app-global-population-chart [data]="topPopulation"></app-global-population-chart>
     </article>
+
+    <!-- Card 4: Watchlist table -->
+    <article class="card insights-card insights-card--wide">
+      <header class="card-header">
+        <h2>Watchlist</h2>
+        <button type="button" class="refresh-btn" (click)="refreshWatchlist()">
+          Refresh
+        </button>
+      </header>
+
+      <div class="watchlist-input">
+        <input
+          type="text"
+          placeholder="Add country code (e.g. US, JP, DE)"
+          [value]="newCode()"
+          (input)="onNewCodeChange($any($event.target).value)"
+          (keyup.enter)="addCode()"
+        />
+        <button type="button" (click)="addCode()">Add</button>
+      </div>
+
+      <div class="watchlist-chips" *ngIf="watchlistCodes().length > 0">
+        <button
+          type="button"
+          class="chip"
+          *ngFor="let code of watchlistCodes()"
+        >
+          <span>{{ code }}</span>
+          <span class="chip-remove" (click)="removeCode(code)">×</span>
+        </button>
+      </div>
+
+      <p class="muted" *ngIf="watchlistItems.length === 0">
+        No watchlist data yet. Add some country codes above (e.g. US, JP, DE).
+      </p>
+
+      <table *ngIf="watchlistItems.length > 0">
+        <thead>
+          <tr>
+            <th>Country</th>
+            <th>Region</th>
+            <th>Currency</th>
+            <th class="numeric">Population</th>
+            <th class="numeric">Value vs {{ baseCurrency }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of watchlistItems">
+            <td>{{ item.name }} ({{ item.code }})</td>
+            <td>{{ item.region }}</td>
+            <td>{{ item.currency || '—' }}</td>
+            <td class="numeric">
+              {{ item.population | number : '1.0-0' }}
+            </td>
+            <td class="numeric">
+              <ng-container *ngIf="item.fxRate != null; else noFx">
+                {{ item.fxRate | number : '1.4-4' }}
+              </ng-container>
+              <ng-template #noFx>—</ng-template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <!-- Card 5: Correlation chart -->
+    <article class="card insights-card insights-card--wide">
+      <h2>Population vs Currency Value</h2>
+      <app-watchlist-correlation-chart
+        [data]="watchlistItems"
+        [baseCurrency]="baseCurrency"
+      ></app-watchlist-correlation-chart>
+    </article>
   </div>
+
+
 </section>

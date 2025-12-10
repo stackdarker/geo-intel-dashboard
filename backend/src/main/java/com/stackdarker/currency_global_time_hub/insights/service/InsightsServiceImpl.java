@@ -13,13 +13,19 @@ import com.stackdarker.currency_global_time_hub.weather.service.WeatherService;
 import org.springframework.stereotype.Service;
 import com.stackdarker.currency_global_time_hub.insights.model.GlobalInsightsOverview;
 import com.stackdarker.currency_global_time_hub.insights.model.PopulationInsight;
+import com.stackdarker.currency_global_time_hub.insights.model.WatchlistCountryInsight;
+import com.stackdarker.currency_global_time_hub.insights.model.WatchlistInsightsResponse;
 
 import java.time.Instant;
 import java.util.Comparator;
-
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Service
 public class InsightsServiceImpl implements InsightsService {
@@ -113,5 +119,87 @@ public GlobalInsightsOverview getGlobalOverview(String baseCurrency) {
             Instant.now()
     );
 }
+
+@Override
+public WatchlistInsightsResponse getWatchlistInsights(List<String> countryCodes,
+                                                      String baseCurrency) {
+    if (countryCodes == null || countryCodes.isEmpty()) {
+        return new WatchlistInsightsResponse(
+                baseCurrency != null ? baseCurrency.toUpperCase(Locale.ROOT) : "USD",
+                List.of(),
+                Instant.now()
+        );
+    }
+
+    String base = (baseCurrency == null || baseCurrency.isBlank())
+            ? "USD"
+            : baseCurrency.toUpperCase(Locale.ROOT);
+
+    Set<String> uniqueCodes = new HashSet<>();
+    for (String code : countryCodes) {
+        if (code != null && !code.isBlank()) {
+            uniqueCodes.add(code.toUpperCase(Locale.ROOT));
+        }
+    }
+
+    if (uniqueCodes.isEmpty()) {
+        return new WatchlistInsightsResponse(base, List.of(), Instant.now());
+    }
+
+    var profiles = new ArrayList<CountryProfile>();
+    for (String code : uniqueCodes) {
+        profiles.add(countryService.getProfile(code));
+    }
+
+    Set<String> targetCurrencies = new HashSet<>();
+    var countryCurrencyMap = new ArrayList<String>(); 
+
+    for (CountryProfile profile : profiles) {
+        String mainCurrency = null;
+        if (profile.getCurrencies() != null && !profile.getCurrencies().isEmpty()) {
+            mainCurrency = profile.getCurrencies().get(0).toUpperCase(Locale.ROOT);
+        }
+
+        countryCurrencyMap.add(mainCurrency);
+
+        if (mainCurrency != null && !mainCurrency.equals(base)) {
+            targetCurrencies.add(mainCurrency);
+        }
+    }
+
+    RatesResponse fx = targetCurrencies.isEmpty()
+            ? new RatesResponse(base, null, Map.of()) 
+            : currencyService.getLatestRates(base, new ArrayList<>(targetCurrencies));
+
+    var resultItems = new ArrayList<WatchlistCountryInsight>();
+
+    for (int i = 0; i < profiles.size(); i++) {
+        CountryProfile profile = profiles.get(i);
+        String mainCurrency = countryCurrencyMap.get(i);
+
+        BigDecimal rate = null;
+        if (mainCurrency != null) {
+            if (mainCurrency.equals(base)) {
+                rate = BigDecimal.ONE;
+            } else if (fx.getRates() != null) {
+                rate = fx.getRates().get(mainCurrency);
+            }
+        }
+
+        long population = profile.getPopulation(); 
+
+        resultItems.add(new WatchlistCountryInsight(
+                profile.getCode(),
+                profile.getName(),
+                profile.getRegion(),
+                population,
+                mainCurrency,
+                rate
+        ));
+    }
+
+    return new WatchlistInsightsResponse(base, resultItems, Instant.now());
+}
+
 
 }

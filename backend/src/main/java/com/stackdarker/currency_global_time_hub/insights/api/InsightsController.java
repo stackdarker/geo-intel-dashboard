@@ -5,7 +5,9 @@ import com.stackdarker.currency_global_time_hub.insights.service.InsightsService
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.stackdarker.currency_global_time_hub.insights.model.GlobalInsightsOverview;
+import com.stackdarker.currency_global_time_hub.insights.model.WatchlistInsightsResponse;
 
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/insights")
@@ -36,5 +38,17 @@ public class InsightsController {
     GlobalInsightsOverview overview = insightsService.getGlobalOverview(baseCurrency);
     return ResponseEntity.ok(overview);
     }
+
+    @GetMapping("/watchlist")
+    public ResponseEntity<WatchlistInsightsResponse> getWatchlist(
+        @RequestParam(name = "codes") List<String> codes,
+        @RequestParam(name = "baseCurrency", required = false, defaultValue = "USD")
+        String baseCurrency
+    ) {
+    WatchlistInsightsResponse response =
+            insightsService.getWatchlistInsights(codes, baseCurrency);
+    return ResponseEntity.ok(response);
+    }
+
 
 }
