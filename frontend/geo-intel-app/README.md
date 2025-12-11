@@ -1,59 +1,84 @@
-# GeoIntelApp
+🌐 Global Insights Dashboard (Geo-Intel)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.10.
+A full-stack analytics dashboard that unifies **global financial**, **geographic**, **weather**, and **timezone** data into a single interactive platform.  
+Built with **Angular** and **Spring Boot**.
 
-## Development server
+---
 
-To start a local development server, run:
+## Features
 
-```bash
-ng serve
-```
+### Currency Analytics
+- Live FX rates from Frankfurter / exchangerate.host  
+- Currency conversion (any → any)  
+- Historical FX charts (7/30/90 days)  
+- Snapshot widget for major currencies  
+- User preference for default base currency  
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Country Intelligence
+- Searchable, filterable country list  
+- Country detail pages (flag, capital, population, region, etc.)  
+- World Bank indicators (GDP, population, life expectancy)  
+- Comparison mode (multi-country side-by-side metrics)  
+- Dashboard widget for “Top Countries” (population-based with region preference)  
 
-## Code scaffolding
+### Weather Insights
+- City + country-aware lookup (e.g., Bedford, US vs Bedford, GB)  
+- Current conditions: temperature, humidity, wind  
+- 24-hour forecast  
+- Weather trend chart with **°C/°F toggle**  
+- Caching for faster repeated lookups  
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Timezones & World Clock
+- Full searchable timezone list  
+- Favorite timezones stored in local preferences  
+- Real-time world clock using `java.time`  
+- Dashboard widget showing your selected cities  
 
-```bash
-ng generate component component-name
-```
+### Insights Module (Cross-API Intelligence)
+- Global overview combining FX + population  
+- Country-level insights (country → indicators + weather + FX + local time)  
+- Watchlist with correlation chart (FX vs population)  
+- Extensible design for future multi-axis analytics  
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## Architecture Overview
 
-## Building
+### Backend — Spring Boot (Java 17)
 
-To build the project run:
+**Backend Capabilities**
+- Central `RestTemplate` with timeouts  
+- Caching via `@EnableCaching` (Redis or in-memory)  
+- Unified exception structure (`ExternalApiException`)  
+- Individual API clients for:
+  - Frankfurter / exchangerate.host  
+  - RestCountries  
+  - World Bank  
+  - OpenWeather-style provider  
+- Insight aggregation layer combining multiple services  
 
-```bash
-ng build
-```
+---
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Frontend — Angular 17
 
-## Running unit tests
+**Frontend Highlights**
+- Standalone Angular architecture (no NgRx required)
+- Signals for reactive state  
+- Dark & light (COMING SOON) themes using CSS variables  
+- Responsive grid dashboard layout  
+- Chart.js for visualizations:
+  - FX historical data  
+  - Weather trends  
+  - Insights correlation charts  
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+**Preferences stored in localStorage**
+- Base FX currency  
+- Region filter  
+- Temperature unit  
+- Favorite timezones  
+- Theme mode (light (COMING SOON) /dark)  
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+**Shared UI features**
+- Reusable `<card>` layout  
+- Skeleton loaders & error states  
+- Global API interceptor mapping `/currency`, `/countries`, `/weather`, `/time`, `/insights`  
